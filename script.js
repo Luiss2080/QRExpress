@@ -1,4 +1,4 @@
-document.getElementById('btn-generar').addEventListener('click', () => {
+function generarQR() {
   const texto = document.getElementById('texto').value.trim();
   const resultado = document.getElementById('resultado');
   if (!texto) {
@@ -7,4 +7,9 @@ document.getElementById('btn-generar').addEventListener('click', () => {
   }
   const url = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encodeURIComponent(texto)}`;
   resultado.innerHTML = `<img src="${url}" alt="Código QR" width="220" height="220">`;
+}
+
+document.getElementById('btn-generar').addEventListener('click', generarQR);
+document.getElementById('texto').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') generarQR();
 });
