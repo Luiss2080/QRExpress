@@ -1,68 +1,220 @@
-import Image from "next/image";
+"use client";
+
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { QrCode, Upload, Camera, Settings2, Download, Zap, Link as LinkIcon, Share2, Mail, MapPin } from 'lucide-react';
 
 export default function Home() {
+  const [activeTab, setActiveTab] = useState<'individual' | 'masivo' | 'escaner'>('individual');
+  const [qrType, setQrType] = useState<'url' | 'social' | 'vcard' | 'email' | 'location'>('url');
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
+      
+      {/* Navbar Premium */}
+      <nav className="fixed w-full z-50 glass-panel border-b border-white/10 dark:border-white/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-primary to-accent flex items-center justify-center shadow-lg shadow-primary/20">
+                <QrCode className="text-white w-6 h-6" />
+              </div>
+              <span className="font-bold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
+                QR Pro Ultimate
+              </span>
+            </div>
+            
+            <div className="flex items-center gap-4">
+              {/* Fake Auth button for SaaS feel */}
+              <button className="px-4 py-2 rounded-full text-sm font-medium hover:bg-secondary transition-colors">
+                Ingresar
+              </button>
+              <button className="px-5 py-2 rounded-full text-sm font-medium bg-foreground text-background hover:scale-105 transition-transform shadow-xl">
+                Prueba Pro
+              </button>
+            </div>
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+      </nav>
+
+      <main className="pt-28 pb-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        
+        {/* Hero Section */}
+        <div className="text-center mb-16 relative">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-primary/20 rounded-full blur-[100px] -z-10" />
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-5xl md:text-7xl font-extrabold tracking-tight mb-6"
           >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            Genera códigos QR <br/>
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">
+              que impresionan
+            </span>
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto"
           >
-            Documentation
-          </a>
+            La plataforma definitiva para crear, escanear y gestionar códigos QR dinámicos y estáticos con estilo premium.
+          </motion.p>
         </div>
+
+        {/* Workspace App */}
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="glass-panel rounded-3xl overflow-hidden shadow-2xl flex flex-col md:flex-row min-h-[600px]"
+        >
+          {/* Sidebar Tools */}
+          <div className="w-full md:w-64 bg-secondary/30 p-6 flex flex-col gap-4 border-r border-border/50">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Herramientas</h3>
+            
+            <button 
+              onClick={() => setActiveTab('individual')}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'individual' ? 'bg-primary text-white shadow-lg shadow-primary/25' : 'hover:bg-secondary/50'}`}
+            >
+              <Zap className="w-5 h-5" />
+              <span className="font-medium">Individual</span>
+            </button>
+            
+            <button 
+              onClick={() => setActiveTab('masivo')}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'masivo' ? 'bg-primary text-white shadow-lg shadow-primary/25' : 'hover:bg-secondary/50'}`}
+            >
+              <Upload className="w-5 h-5" />
+              <span className="font-medium">Generación Masiva</span>
+            </button>
+            
+            <button 
+              onClick={() => setActiveTab('escaner')}
+              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'escaner' ? 'bg-primary text-white shadow-lg shadow-primary/25' : 'hover:bg-secondary/50'}`}
+            >
+              <Camera className="w-5 h-5" />
+              <span className="font-medium">Escáner Web</span>
+            </button>
+          </div>
+
+          {/* Main Workspace Area */}
+          <div className="flex-1 p-6 md:p-10 flex flex-col md:flex-row gap-10 bg-background/50">
+            
+            {/* Left Panel: Configuration */}
+            <div className="flex-1 flex flex-col gap-8">
+              {activeTab === 'individual' && (
+                <motion.div initial={{opacity:0}} animate={{opacity:1}}>
+                  <h2 className="text-2xl font-bold mb-6">Configura tu QR</h2>
+                  
+                  {/* Type Selector */}
+                  <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
+                    {[
+                      { id: 'url', icon: LinkIcon, label: 'Enlace URL' },
+                      { id: 'social', icon: Share2, label: 'Redes Sociales' },
+                      { id: 'email', icon: Mail, label: 'Correo' },
+                      { id: 'location', icon: MapPin, label: 'Ubicación' },
+                    ].map((t) => (
+                      <button 
+                        key={t.id}
+                        onClick={() => setQrType(t.id as any)}
+                        className={`flex flex-col items-center justify-center p-4 rounded-2xl border transition-all ${qrType === t.id ? 'border-primary bg-primary/5 text-primary' : 'border-border/50 hover:border-primary/30 text-muted-foreground'}`}
+                      >
+                        <t.icon className="w-6 h-6 mb-2" />
+                        <span className="text-xs font-semibold">{t.label}</span>
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* Input Data */}
+                  <div className="space-y-4">
+                    <div>
+                      <label className="block text-sm font-medium mb-2">Destino (URL)</label>
+                      <input 
+                        type="text" 
+                        placeholder="https://ejemplo.com"
+                        className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-border/50 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                      />
+                    </div>
+                    
+                    <div className="pt-4 border-t border-border/50">
+                      <div className="flex items-center justify-between mb-4">
+                        <label className="text-sm font-medium flex items-center gap-2">
+                          <Settings2 className="w-4 h-4" /> Personalización Visual
+                        </label>
+                        <span className="text-xs bg-accent/10 text-accent px-2 py-1 rounded-full font-semibold">PRO</span>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-4">
+                        <div>
+                          <label className="block text-xs text-muted-foreground mb-1">Color Principal</label>
+                          <div className="flex gap-2">
+                            {['#0f172a', '#4f46e5', '#ec4899', '#10b981'].map(c => (
+                              <button key={c} className="w-8 h-8 rounded-full border-2 border-white dark:border-slate-800 shadow-sm" style={{backgroundColor: c}} />
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {activeTab === 'masivo' && (
+                <motion.div initial={{opacity:0}} animate={{opacity:1}} className="flex flex-col items-center justify-center h-full text-center">
+                  <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-6">
+                    <Upload className="w-10 h-10 text-primary" />
+                  </div>
+                  <h2 className="text-2xl font-bold mb-3">Generación Masiva (CSV)</h2>
+                  <p className="text-muted-foreground max-w-sm mb-8">Sube tu archivo .csv y generaremos un archivo .zip con miles de códigos QR en segundos gracias a los Web Workers.</p>
+                  <button className="px-6 py-3 bg-foreground text-background rounded-xl font-medium hover:scale-105 transition-transform">
+                    Seleccionar Archivo CSV
+                  </button>
+                </motion.div>
+              )}
+
+              {activeTab === 'escaner' && (
+                <motion.div initial={{opacity:0}} animate={{opacity:1}} className="flex flex-col items-center justify-center h-full text-center">
+                  <div className="w-full max-w-md aspect-square bg-black/5 rounded-3xl border-2 border-dashed border-border/60 flex flex-col items-center justify-center relative overflow-hidden">
+                    <Camera className="w-12 h-12 text-muted-foreground mb-4" />
+                    <p className="text-sm text-muted-foreground font-medium">Cámara no inicializada</p>
+                    <button className="mt-4 px-5 py-2 bg-primary text-white rounded-lg font-medium text-sm">
+                      Permitir Cámara
+                    </button>
+                  </div>
+                </motion.div>
+              )}
+            </div>
+
+            {/* Right Panel: Preview (only for individual) */}
+            {activeTab === 'individual' && (
+              <div className="w-full md:w-80 flex flex-col items-center border-l border-border/50 pl-0 md:pl-10 pt-10 md:pt-0">
+                <h3 className="text-sm font-semibold text-muted-foreground mb-8">Vista Previa</h3>
+                
+                <div className="w-64 h-64 bg-white rounded-2xl p-4 shadow-xl mb-8 relative group cursor-pointer hover:scale-105 transition-transform duration-300">
+                  {/* Fake QR for UI visual */}
+                  <div className="w-full h-full bg-[url('https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=Premium-QR')] bg-contain bg-no-repeat bg-center opacity-90 group-hover:opacity-100 transition-opacity" />
+                  <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-colors rounded-2xl" />
+                </div>
+
+                <div className="w-full space-y-3">
+                  <button className="w-full flex items-center justify-center gap-2 py-3 bg-primary text-white rounded-xl font-medium shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all hover:-translate-y-0.5">
+                    <Download className="w-5 h-5" />
+                    Descargar Alta Calidad
+                  </button>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button className="flex items-center justify-center gap-2 py-2 bg-secondary/50 rounded-xl font-medium text-sm hover:bg-secondary transition-colors">
+                      SVG (Vector)
+                    </button>
+                    <button className="flex items-center justify-center gap-2 py-2 bg-secondary/50 rounded-xl font-medium text-sm hover:bg-secondary transition-colors">
+                      PDF (Print)
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </motion.div>
       </main>
     </div>
   );
