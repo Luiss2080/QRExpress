@@ -1,36 +1,81 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+<div align="center">
+  <img src="https://img.icons8.com/nolan/96/qr-code.png" alt="QR Pro Ultimate Logo" width="100"/>
+  
+  # 🚀 QR Pro Ultimate (SaaS Edition)
+  **El Ecosistema Definitivo para Generación, Gestión y Analítica de Códigos QR.**
+  
+  [![Estado](https://img.shields.io/badge/Estado-Producci%C3%B3n-success?style=for-the-badge)](#)
+  [![Versión](https://img.shields.io/badge/Versi%C3%B3n-4.0.0--Next.js-black?style=for-the-badge&logo=next.js)](#)
+  [![Arquitectura](https://img.shields.io/badge/Stack-React_|_Tailwind_|_Framer-38bdf8?style=for-the-badge)](#)
+  [![Metodología](https://img.shields.io/badge/Dise%C3%B1ado_con-SDD-8b5cf6?style=for-the-badge)](#)
+</div>
 
-## Getting Started
+<br/>
 
-First, run the development server:
+**QR Pro Ultimate** ha evolucionado de una simple utilidad Vanilla JS a un robusto **Software as a Service (SaaS)** construido sobre Next.js. Guiados por la filosofía [SDD (Spec-Driven Development)](docs/sdd/spec.md), ofrecemos una experiencia inigualable, fusionando privacidad absoluta con analíticas avanzadas.
+
+---
+
+## ✨ Nuevas Características Premium
+
+### 🎨 1. Interfaz Glassmorphism & Microinteracciones
+Una experiencia de usuario (UX) asombrosa propulsada por **Framer Motion** y **TailwindCSS**. Disfruta de transiciones fluidas, modales animados y notificaciones *toast* interactivas (cortesía de `sonner`).
+
+### 📊 2. Dashboard de Analíticas (Nuevo)
+Entiende a tu audiencia. Hemos incorporado un panel interactivo impulsado por **Recharts** que te permite visualizar:
+- **Rendimiento de escaneos** a lo largo del tiempo.
+- **Top de dispositivos** y orígenes geográficos.
+- Control total de tus campañas QR Dinámicas.
+
+### 🖼️ 3. Personalización Extrema (Branding Inteligente)
+- Sube tu **Logotipo Corporativo** desde tu ordenador; el motor lo incrustará perfectamente en el centro de tu QR en tiempo real.
+- Control avanzado de niveles de corrección de errores (High, Medium, Low) para garantizar la escaneabilidad.
+- Generación de códigos multi-formato con descarga directa e instantánea.
+
+### 🗃️ 4. Procesamiento Masivo (Bulk)
+Genera cientos de QRs desde un archivo `.csv`. Próximamente potenciado por **Web Workers** para garantizar que tu navegador nunca se congele durante exportaciones masivas a `.zip`.
+
+### 📷 5. Escáner Lector (Webcam)
+Convierte tu dispositivo móvil o computadora en un escáner nativo ultra-rápido para decodificar QRs físicos.
+
+---
+
+## 💻 Arquitectura y Stack Tecnológico
+
+Hemos abrazado los estándares más modernos de la industria web:
+- **Core**: Next.js (App Router) + React 19
+- **Estilización**: TailwindCSS (Variables nativas para Dark/Light Mode perfecto sin parpadeos).
+- **Animaciones**: Framer Motion
+- **Iconografía**: Lucide React
+- **Gráficos Data**: Recharts
+- **Testing (WIP)**: Vitest + React Testing Library
+
+---
+
+## 🚀 Instalación y Uso (Entorno de Desarrollo)
+
+Clona el repositorio e inicia el servidor en modo desarrollo con recarga en vivo (Hot Module Replacement):
 
 ```bash
+# 1. Instala las dependencias
+npm install
+
+# 2. Inicia el servidor
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Abre [http://localhost:3000](http://localhost:3000) en tu navegador para ver la magia.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📘 Estándar SDD (Spec-Driven Development) & Ayuda
 
-## Learn More
+Este proyecto no adivina requisitos, los sigue. Puedes revisar nuestra documentación técnica y manuales:
+- [📖 Manual de Uso Interactivo](http://localhost:3000/ayuda): Integrado en la propia app.
+- [📑 spec.md](docs/sdd/spec.md): Especificación técnica en notación EARS.
+- [📋 MANUAL_DE_USO.md](docs/MANUAL_DE_USO.md): Formato markdown crudo para desarrolladores.
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+<div align="center">
+  <sub>Construido con ❤️ y React por el ecosistema Algentic.</sub>
+</div>
