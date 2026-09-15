@@ -1,21 +1,28 @@
 import { GeneradorQR } from './modulos/generador-qr.js';
 import { GestorHistorial } from './modulos/gestor-historial.js';
 import { ControladorUI } from './modulos/controlador-ui.js';
+import { GestorTemas } from './modulos/gestor-temas.js';
+import { GeneradorMasivo } from './modulos/generador-masivo.js';
+import { LectorQR } from './modulos/lector-qr.js';
 
 /**
  * Archivo Principal (Entry Point)
- * Orquesta la inicialización de todos los módulos y controla el flujo de la aplicación.
+ * Inicializa todos los módulos (Ultimate Edition)
  */
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Instanciar módulos base
+    // Inicializar Tema primero para evitar parpadeos
+    const gestorTemas = new GestorTemas();
+    
     const gestorHistorial = new GestorHistorial();
     const generadorQR = new GeneradorQR('contenedor-qr');
-    
-    // 2. Instanciar controlador de interfaz inyectando dependencias
     const controladorUI = new ControladorUI(generadorQR, gestorHistorial);
-    
-    // 3. Inicializar la aplicación
     controladorUI.inicializar();
     
-    console.log("🚀 Aplicación Generador QR Pro inicializada correctamente.");
+    const generadorMasivo = new GeneradorMasivo();
+    generadorMasivo.inicializar();
+    
+    const lectorQR = new LectorQR('contenedor-video-qr');
+    lectorQR.inicializar();
+    
+    console.log("🚀 Aplicación QR Pro Ultimate inicializada correctamente.");
 });

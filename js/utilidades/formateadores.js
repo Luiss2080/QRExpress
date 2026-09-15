@@ -1,63 +1,63 @@
 import { TIPOS_QR } from '../configuracion/constantes.js';
-import { Validador } from './validador.js';
-
-/**
- * Formateadores de Datos
- * Transforma los objetos en crudo obtenidos del formulario en cadenas formateadas
- * listas para ser codificadas en el QR.
- */
 
 export function formatearDatosQR(tipo, datosCrudos) {
     switch (tipo) {
-        case TIPOS_QR.URL:
-        case TIPOS_QR.TEXTO:
+        case 'url':
+        case 'texto':
             return datosCrudos.texto || '';
             
-        case TIPOS_QR.WIFI:
+        case 'social':
+            if (datosCrudos.usuario) {
+                // Quitar @ inicial si existe
+                const usr = datosCrudos.usuario.replace('@', '');
+                switch (datosCrudos.plataforma) {
+                    case 'instagram': return `https://instagram.com/${usr}`;
+                    case 'linkedin': return `https://linkedin.com/in/${usr}`;
+                    case 'youtube': return `https://youtube.com/@${usr}`;
+                }
+            }
+            return '';
+
+        case 'vcalendar':
+            if (datosCrudos.titulo && datosCrudos.inicio && datosCrudos.fin) {
+                // Formato básico iCal
+                const formatoFecha = (fechaHtml) => fechaHtml.replace(/[-:]/g, '').replace('T', 'T') + '00Z';
+                const inicioFormato = formatoFecha(datosCrudos.inicio);
+                const finFormato = formatoFecha(datosCrudos.fin);
+                return `BEGIN:VCALENDAR\nVERSION:2.0\nBEGIN:VEVENT\nSUMMARY:${datosCrudos.titulo}\nDTSTART:${inicioFormato}\nDTEND:${finFormato}\nEND:VEVENT\nEND:VCALENDAR`;
+            }
+            return '';
+            
+        case 'wifi':
             if (datosCrudos.ssid) {
-                return `WIFI:S:${datosCrudos.ssid};T:${datosCrudos.encriptacion};P:${datosCrudos.password};;`;
+                return `WIFI:S:${datosCrudos.ssid};T:WPA;P:${datosCrudos.password};;`;
             }
             return '';
             
-        case TIPOS_QR.CONTACTO:
+        case 'contacto':
             if (datosCrudos.nombre) {
-                return `BEGIN:VCARD\nVERSION:3.0\nN:${datosCrudos.nombre}\nTEL:${datosCrudos.telefono}\nEMAIL:${datosCrudos.email}\nEND:VCARD`;
+                return `BEGIN:VCARD\nVERSION:3.0\nN:${datosCrudos.nombre}\nTEL:${datosCrudos.telefono}\nEND:VCARD`;
             }
             return '';
             
-        case TIPOS_QR.WHATSAPP:
+        case 'whatsapp':
             if (datosCrudos.telefono) {
-                const telefonoLimpio = Validador.limpiarTelefono(datosCrudos.telefono);
+                const telefonoLimpio = datosCrudos.telefono.replace(/[^\d+]/g, '');
                 const parametroTexto = datosCrudos.mensaje ? `?text=${encodeURIComponent(datosCrudos.mensaje)}` : '';
                 return `https://wa.me/${telefonoLimpio}${parametroTexto}`;
             }
             return '';
             
-        case TIPOS_QR.EMAIL:
-            if (datosCrudos.destinatario && Validador.esEmailValido(datosCrudos.destinatario)) {
-                let url = `mailto:${datosCrudos.destinatario}`;
-                const params = [];
-                if (datosCrudos.asunto) params.push(`subject=${encodeURIComponent(datosCrudos.asunto)}`);
-                if (datosCrudos.cuerpo) params.push(`body=${encodeURIComponent(datosCrudos.cuerpo)}`);
-                
-                if (params.length > 0) {
-                    url += `?${params.join('&')}`;
-                }
-                return url;
-            }
-            return '';
-            
-        case TIPOS_QR.GEO:
-            if (Validador.sonCoordenadasValidas(datosCrudos.latitud, datosCrudos.longitud)) {
+        case 'geo':
+            if (datosCrudos.latitud && datosCrudos.longitud) {
                 return `geo:${datosCrudos.latitud},${datosCrudos.longitud}`;
             }
             return '';
             
-        case TIPOS_QR.CRIPTO:
+        case 'cripto':
             if (datosCrudos.direccion) {
                 const monedaStr = datosCrudos.moneda === 'BTC' ? 'bitcoin' : 'ethereum';
-                const parametroMonto = datosCrudos.monto ? `?amount=${datosCrudos.monto}` : '';
-                return `${monedaStr}:${datosCrudos.direccion}${parametroMonto}`;
+                return `${monedaStr}:${datosCrudos.direccion}`;
             }
             return '';
             
@@ -66,42 +66,6 @@ export function formatearDatosQR(tipo, datosCrudos) {
     }
 }
 
-/**
- * Obtiene una versión corta y legible de los datos para mostrar en el historial
- */
 export function obtenerDatosDeVisualizacion(tipo, datosFormateados) {
-    if (!datosFormateados) return '';
-    
-    switch (tipo) {
-        case TIPOS_QR.URL:
-        case TIPOS_QR.TEXTO:
-            return datosFormateados;
-            
-        case TIPOS_QR.WHATSAPP:
-            const matchWa = datosFormateados.match(/wa\.me\/([0-9+]+)/);
-            return matchWa ? `WA: ${matchWa[1]}` : datosFormateados;
-            
-        case TIPOS_QR.WIFI:
-            const matchWifi = datosFormateados.match(/S:(.*?);/);
-            return matchWifi ? `WiFi: ${matchWifi[1]}` : datosFormateados;
-            
-        case TIPOS_QR.CONTACTO:
-            const matchVc = datosFormateados.match(/N:(.*?)\n/);
-            return matchVc ? `Contacto: ${matchVc[1]}` : datosFormateados;
-            
-        case TIPOS_QR.EMAIL:
-            const matchEmail = datosFormateados.match(/mailto:([^?]+)/);
-            return matchEmail ? `Email: ${matchEmail[1]}` : datosFormateados;
-            
-        case TIPOS_QR.GEO:
-            const matchGeo = datosFormateados.match(/geo:(.*)/);
-            return matchGeo ? `Mapa: ${matchGeo[1]}` : datosFormateados;
-            
-        case TIPOS_QR.CRIPTO:
-            const parts = datosFormateados.split(':');
-            return parts.length >= 2 ? `${parts[0]}: ${parts[1].substring(0,8)}...` : datosFormateados;
-            
-        default:
-            return datosFormateados;
-    }
+    return datosFormateados; // Simplificado
 }
