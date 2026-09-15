@@ -2,9 +2,10 @@
 
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { QrCode, Upload, Camera, Settings2, Download, Zap, Link as LinkIcon, Share2, Mail, MapPin, HelpCircle, X } from 'lucide-react';
+import { QrCode, Upload, Camera, Settings2, Download, Zap, Link as LinkIcon, Share2, Mail, MapPin, HelpCircle, X, Check } from 'lucide-react';
 import QRCode from 'qrcode';
 import Link from 'next/link';
+import { toast } from 'sonner';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'individual' | 'masivo' | 'escaner'>('individual');
@@ -26,6 +27,12 @@ export default function Home() {
       margin: 2
     }).then(url => setQrImage(url)).catch(console.error);
   }, [qrData, qrColor]);
+
+  const handleDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    toast.success('¡Código QR generado y descargado con éxito!', {
+      icon: <Check className="text-green-500 w-5 h-5" />
+    });
+  };
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
@@ -95,26 +102,41 @@ export default function Home() {
             
             <button 
               onClick={() => setActiveTab('individual')}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'individual' ? 'bg-primary text-white shadow-lg shadow-primary/25' : 'hover:bg-secondary/50'}`}
+              className={`relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all overflow-hidden ${activeTab === 'individual' ? 'text-white' : 'hover:bg-secondary/50'}`}
             >
-              <Zap className="w-5 h-5" />
-              <span className="font-medium">Individual</span>
+              {activeTab === 'individual' && (
+                <motion.div layoutId="activeTabBg" className="absolute inset-0 bg-primary shadow-lg shadow-primary/25 rounded-xl z-0" />
+              )}
+              <div className="relative z-10 flex items-center gap-3">
+                <Zap className="w-5 h-5" />
+                <span className="font-medium">Individual</span>
+              </div>
             </button>
             
             <button 
               onClick={() => setActiveTab('masivo')}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'masivo' ? 'bg-primary text-white shadow-lg shadow-primary/25' : 'hover:bg-secondary/50'}`}
+              className={`relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all overflow-hidden ${activeTab === 'masivo' ? 'text-white' : 'hover:bg-secondary/50'}`}
             >
-              <Upload className="w-5 h-5" />
-              <span className="font-medium">Generación Masiva</span>
+              {activeTab === 'masivo' && (
+                <motion.div layoutId="activeTabBg" className="absolute inset-0 bg-primary shadow-lg shadow-primary/25 rounded-xl z-0" />
+              )}
+              <div className="relative z-10 flex items-center gap-3">
+                <Upload className="w-5 h-5" />
+                <span className="font-medium">Generación Masiva</span>
+              </div>
             </button>
             
             <button 
               onClick={() => setActiveTab('escaner')}
-              className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${activeTab === 'escaner' ? 'bg-primary text-white shadow-lg shadow-primary/25' : 'hover:bg-secondary/50'}`}
+              className={`relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all overflow-hidden ${activeTab === 'escaner' ? 'text-white' : 'hover:bg-secondary/50'}`}
             >
-              <Camera className="w-5 h-5" />
-              <span className="font-medium">Escáner Web</span>
+              {activeTab === 'escaner' && (
+                <motion.div layoutId="activeTabBg" className="absolute inset-0 bg-primary shadow-lg shadow-primary/25 rounded-xl z-0" />
+              )}
+              <div className="relative z-10 flex items-center gap-3">
+                <Camera className="w-5 h-5" />
+                <span className="font-medium">Escáner Web</span>
+              </div>
             </button>
           </div>
 
@@ -233,6 +255,7 @@ export default function Home() {
                   <a 
                     href={qrImage} 
                     download="codigo-qr.png"
+                    onClick={handleDownload}
                     className="w-full flex items-center justify-center gap-2 py-3 bg-primary text-white rounded-xl font-medium shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all hover:-translate-y-0.5"
                   >
                     <Download className="w-5 h-5" />
