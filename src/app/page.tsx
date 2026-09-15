@@ -14,6 +14,7 @@ export default function Home() {
   const [qrData, setQrData] = useState('https://ejemplo.com');
   const [qrColor, setQrColor] = useState('#0f172a');
   const [qrImage, setQrImage] = useState('');
+  const [logoImage, setLogoImage] = useState<string | null>(null);
   
   const [showSettingsModal, setShowSettingsModal] = useState(false);
 
@@ -49,7 +50,10 @@ export default function Home() {
                 QR Pro Ultimate
               </span>
             </div>
-            
+            <div className="flex items-center gap-4">
+              <Link href="/dashboard" className="px-4 py-2 rounded-full text-sm font-medium hover:bg-secondary transition-colors text-primary hidden md:block">
+                Ver Analíticas
+              </Link>
               <Link href="/ayuda" className="px-4 py-2 rounded-full text-sm font-medium hover:bg-secondary transition-colors flex items-center gap-2">
                 <HelpCircle className="w-4 h-4" /> Manual
               </Link>
@@ -244,7 +248,16 @@ export default function Home() {
                 
                 <div className="w-64 h-64 bg-white rounded-2xl p-4 shadow-xl mb-8 relative group cursor-pointer hover:scale-105 transition-transform duration-300 flex items-center justify-center">
                   {qrImage ? (
-                    <img src={qrImage} alt="Código QR Generado" className="w-full h-full object-contain" />
+                    <>
+                      <img src={qrImage} alt="Código QR Generado" className="w-full h-full object-contain" />
+                      {logoImage && (
+                        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                          <div className="bg-white p-1 rounded-lg shadow-sm">
+                            <img src={logoImage} className="w-12 h-12 object-contain rounded-md" alt="Logo central" />
+                          </div>
+                        </div>
+                      )}
+                    </>
                   ) : (
                     <div className="w-full h-full bg-secondary/20 animate-pulse rounded-xl" />
                   )}
@@ -300,9 +313,28 @@ export default function Home() {
               <div className="space-y-5">
                 <div>
                   <label className="block text-sm font-medium mb-2">Incrustar Logotipo Central</label>
-                  <div className="w-full h-24 border-2 border-dashed border-border/60 rounded-xl flex items-center justify-center cursor-pointer hover:bg-secondary/20 transition-colors">
-                    <span className="text-sm font-medium text-muted-foreground flex items-center gap-2"><Upload className="w-4 h-4" /> Subir Imagen (PRO)</span>
-                  </div>
+                  <label className="w-full h-24 border-2 border-dashed border-border/60 rounded-xl flex items-center justify-center cursor-pointer hover:bg-secondary/20 transition-colors">
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      className="hidden" 
+                      onChange={(e) => {
+                        if (e.target.files && e.target.files[0]) {
+                          const reader = new FileReader();
+                          reader.onload = (ev) => setLogoImage(ev.target?.result as string);
+                          reader.readAsDataURL(e.target.files[0]);
+                        }
+                      }} 
+                    />
+                    <span className="text-sm font-medium text-muted-foreground flex items-center gap-2">
+                      <Upload className="w-4 h-4" /> {logoImage ? 'Cambiar Logotipo' : 'Subir Imagen (PRO)'}
+                    </span>
+                  </label>
+                  {logoImage && (
+                    <button onClick={() => setLogoImage(null)} className="text-xs text-red-500 mt-2 hover:underline">
+                      Eliminar Logotipo
+                    </button>
+                  )}
                 </div>
                 <div>
                   <label className="block text-sm font-medium mb-2">Nivel de Corrección de Errores</label>
