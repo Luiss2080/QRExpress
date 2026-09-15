@@ -3,227 +3,283 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>QR Pro - Generador Interactivo (ES)</title>
-  <meta name="description" content="Generador de QRs avanzado. 8 formatos soportados, personalización de logos, descargas SVG y PNG.">
+  <title>QR Pro - Generador Comercial Interactivo</title>
+  <meta name="description" content="Generador de QRs avanzado. Múltiples formatos soportados, personalización de logos, descargas SVG y PNG.">
   <link rel="stylesheet" href="css/estilos.css">
   <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.5.0/lib/qr-code-styling.js"></script>
 </head>
 <body>
-  <header>
-    <h1>QR Pro ES</h1>
-    <p>Diseña, personaliza y exporta QRs de forma profesional</p>
-  </header>
 
-  <div class="contenedor-principal">
-    
-    <!-- Lado Izquierdo: Formularios -->
-    <main class="panel-cristal">
-      
-      <!-- Cuadrícula de Selección de Tipos -->
-      <div class="cuadricula-tipos">
-        <div class="tarjeta-tipo activa" data-tipo="url">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-          <span>Enlace</span>
-        </div>
-        <div class="tarjeta-tipo" data-tipo="texto">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="17" y1="18" x2="3" y2="18"></line></svg>
-          <span>Texto</span>
-        </div>
-        <div class="tarjeta-tipo" data-tipo="wifi">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>
-          <span>WiFi</span>
-        </div>
-        <div class="tarjeta-tipo" data-tipo="contacto">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-          <span>Contacto</span>
-        </div>
-        <div class="tarjeta-tipo" data-tipo="whatsapp">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-          <span>WhatsApp</span>
-        </div>
-        <div class="tarjeta-tipo" data-tipo="email">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
-          <span>Email</span>
-        </div>
-        <div class="tarjeta-tipo" data-tipo="geo">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-          <span>Ubicación</span>
-        </div>
-        <div class="tarjeta-tipo" data-tipo="cripto">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path><line x1="12" y1="18" x2="12" y2="22"></line><line x1="12" y1="2" x2="12" y2="6"></line></svg>
-          <span>Cripto</span>
-        </div>
-      </div>
-
-      <div id="mensaje-error" class="mensaje-error"></div>
-
-      <!-- Formularios Dinámicos -->
-      <div id="formulario-url" class="formulario-tipo">
-        <div class="grupo-form">
-          <label for="input-url">URL del sitio web</label>
-          <input type="url" id="input-url" placeholder="https://mi-empresa.com">
-        </div>
-      </div>
-
-      <div id="formulario-texto" class="formulario-tipo oculto">
-        <div class="grupo-form">
-          <label for="input-texto">Mensaje o texto libre</label>
-          <textarea id="input-texto" rows="3" placeholder="Ingresa el texto aquí..."></textarea>
-        </div>
-      </div>
-
-      <div id="formulario-wifi" class="formulario-tipo oculto">
-        <div class="grupo-form">
-          <label for="input-wifi-ssid">Nombre de la red (SSID)</label>
-          <input type="text" id="input-wifi-ssid" placeholder="Mi_WiFi">
-        </div>
-        <div class="grupo-form">
-          <label for="input-wifi-password">Contraseña</label>
-          <input type="password" id="input-wifi-password" placeholder="Contraseña">
-        </div>
-        <div class="grupo-form">
-          <label for="input-wifi-tipo">Seguridad</label>
-          <select id="input-wifi-tipo">
-            <option value="WPA">WPA/WPA2</option>
-            <option value="WEP">WEP</option>
-            <option value="nopass">Sin Contraseña</option>
-          </select>
-        </div>
-      </div>
-
-      <div id="formulario-contacto" class="formulario-tipo oculto">
-        <div class="grupo-form">
-          <label for="input-vc-nombre">Nombre completo</label>
-          <input type="text" id="input-vc-nombre" placeholder="Ej: Laura García">
-        </div>
-        <div class="grupo-form">
-          <label for="input-vc-telefono">Teléfono</label>
-          <input type="tel" id="input-vc-telefono" placeholder="+34 600 000 000">
-        </div>
-        <div class="grupo-form">
-          <label for="input-vc-email">Correo Electrónico</label>
-          <input type="email" id="input-vc-email" placeholder="laura@ejemplo.com">
-        </div>
-      </div>
-      
-      <div id="formulario-whatsapp" class="formulario-tipo oculto">
-        <div class="grupo-form">
-          <label for="input-wa-telefono">Teléfono (con prefijo del país)</label>
-          <input type="tel" id="input-wa-telefono" placeholder="+54 9 11 0000 0000">
-        </div>
-        <div class="grupo-form">
-          <label for="input-wa-mensaje">Mensaje predefinido</label>
-          <input type="text" id="input-wa-mensaje" placeholder="Hola, me interesa tu producto.">
-        </div>
-      </div>
-
-      <div id="formulario-email" class="formulario-tipo oculto">
-        <div class="grupo-form">
-          <label for="input-email-dest">Destinatario</label>
-          <input type="email" id="input-email-dest" placeholder="ventas@ejemplo.com">
-        </div>
-        <div class="grupo-form">
-          <label for="input-email-asunto">Asunto</label>
-          <input type="text" id="input-email-asunto" placeholder="Solicitud de presupuesto">
-        </div>
-        <div class="grupo-form">
-          <label for="input-email-cuerpo">Cuerpo del mensaje</label>
-          <textarea id="input-email-cuerpo" rows="2" placeholder="Quisiera cotizar..."></textarea>
-        </div>
-      </div>
-
-      <div id="formulario-geo" class="formulario-tipo oculto">
-        <div class="grupo-form">
-          <label for="input-geo-lat">Latitud</label>
-          <input type="number" step="any" id="input-geo-lat" placeholder="Ej: 40.416775">
-        </div>
-        <div class="grupo-form">
-          <label for="input-geo-lng">Longitud</label>
-          <input type="number" step="any" id="input-geo-lng" placeholder="Ej: -3.703790">
-        </div>
-      </div>
-
-      <div id="formulario-cripto" class="formulario-tipo oculto">
-        <div class="grupo-form">
-          <label for="input-cripto-moneda">Criptomoneda</label>
-          <select id="input-cripto-moneda">
-            <option value="BTC">Bitcoin (BTC)</option>
-            <option value="ETH">Ethereum (ETH)</option>
-          </select>
-        </div>
-        <div class="grupo-form">
-          <label for="input-cripto-dir">Dirección de la billetera (Address)</label>
-          <input type="text" id="input-cripto-dir" placeholder="1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa">
-        </div>
-        <div class="grupo-form">
-          <label for="input-cripto-monto">Monto (Opcional)</label>
-          <input type="number" step="any" id="input-cripto-monto" placeholder="0.05">
-        </div>
-      </div>
-
-      <!-- Sección de Personalización -->
-      <h3 class="titulo-seccion">Estilo y Personalización</h3>
-      
-      <div class="grupo-form">
-          <label for="subida-logo">Incrustar Logo (PNG/JPG)</label>
-          <input type="file" id="subida-logo" accept="image/png, image/jpeg, image/svg+xml">
-      </div>
-
-      <div class="grupo-form">
-          <label for="estilo-puntos">Forma del Código</label>
-          <select id="estilo-puntos">
-            <option value="square">Puntos Cuadrados</option>
-            <option value="dots">Puntos Redondos</option>
-            <option value="rounded">Bordes Suavizados</option>
-            <option value="classy">Clásico Elegante</option>
-          </select>
-      </div>
-
-      <div class="selectores-color grupo-form">
-        <div class="selector-color">
-          <label for="color-frente">Color Principal</label>
-          <input type="color" id="color-frente" value="#000000">
-        </div>
-        <div class="selector-color">
-          <label for="color-fondo">Fondo</label>
-          <input type="color" id="color-fondo" value="#ffffff">
-        </div>
-      </div>
-
-      <button id="boton-generar" class="boton">
-        Crear Código QR
+  <!-- Modal de Vista Previa -->
+  <div id="modal-qr" class="modal oculto">
+    <div class="modal-contenido">
+      <button id="btn-cerrar-modal" class="btn-cerrar">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
       </button>
-    </main>
-
-    <!-- Lado Derecho: Resultado -->
-    <aside class="panel-cristal panel-resultado">
-      <div id="envoltorio-qr">
-        <div id="contenedor-qr">
-          <!-- Placeholder SVG -->
-          <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><path d="M8 12h8"></path><path d="M12 8v8"></path></svg>
-        </div>
+      <h2>Vista Previa del QR</h2>
+      <div id="contenedor-qr-modal" class="qr-modal-wrapper"></div>
+      <div class="grupo-botones-descarga mt-4">
+        <button id="modal-descargar-png" class="boton boton-secundario">Descargar PNG</button>
+        <button id="modal-descargar-svg" class="boton">Descargar SVG</button>
       </div>
-      
-      <div class="grupo-botones-descarga">
-          <button id="boton-descargar-png" class="boton boton-secundario oculto">
-            Bajar en PNG
-          </button>
-          <button id="boton-descargar-svg" class="boton oculto">
-            Bajar en SVG (Vector)
-          </button>
-      </div>
-    </aside>
+    </div>
   </div>
 
-  <!-- Historial -->
-  <section class="seccion-historial">
-    <h3 class="titulo-seccion">Tus Creaciones Recientes</h3>
-    <div id="contenedor-historial" class="grid-historial">
-      <!-- Elementos inyectados por JS -->
-    </div>
-  </section>
+  <div class="app-layout">
+    <!-- Cabecera -->
+    <header class="app-header">
+      <div class="logo-area">
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icono-logo"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><rect x="7" y="7" width="3" height="3"></rect><rect x="14" y="7" width="3" height="3"></rect><rect x="7" y="14" width="3" height="3"></rect><rect x="14" y="14" width="3" height="3"></rect></svg>
+        <div>
+          <h1>QR Pro</h1>
+          <p>Plataforma Profesional</p>
+        </div>
+      </div>
+      <button id="btn-ver-historial" class="boton-icono" title="Ver Historial">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+      </button>
+    </header>
 
-  <!-- Módulo principal de la aplicación -->
+    <div class="contenedor-principal">
+      
+      <!-- Lado Izquierdo: Formularios -->
+      <main class="panel-cristal panel-izquierdo">
+        
+        <h2 class="titulo-seccion">1. Selecciona el Tipo de QR</h2>
+        <!-- Cuadrícula de Selección de Tipos -->
+        <div class="cuadricula-tipos">
+          <div class="tarjeta-tipo activa" data-tipo="url">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+            <span>Enlace</span>
+          </div>
+          <div class="tarjeta-tipo" data-tipo="texto">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="17" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="3" y2="14"></line><line x1="17" y1="18" x2="3" y2="18"></line></svg>
+            <span>Texto</span>
+          </div>
+          <div class="tarjeta-tipo" data-tipo="wifi">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>
+            <span>WiFi</span>
+          </div>
+          <div class="tarjeta-tipo" data-tipo="contacto">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+            <span>Contacto</span>
+          </div>
+          <div class="tarjeta-tipo" data-tipo="whatsapp">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            <span>WhatsApp</span>
+          </div>
+          <div class="tarjeta-tipo" data-tipo="email">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            <span>Email</span>
+          </div>
+          <div class="tarjeta-tipo" data-tipo="geo">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            <span>Ubicación</span>
+          </div>
+          <div class="tarjeta-tipo" data-tipo="cripto">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path><line x1="12" y1="18" x2="12" y2="22"></line><line x1="12" y1="2" x2="12" y2="6"></line></svg>
+            <span>Cripto</span>
+          </div>
+        </div>
+
+        <div id="mensaje-error" class="mensaje-error"></div>
+
+        <h2 class="titulo-seccion">2. Ingresa los Datos</h2>
+        <!-- Formularios Dinámicos -->
+        <div id="formulario-url" class="formulario-tipo">
+          <div class="grupo-form">
+            <label for="input-url">URL del sitio web</label>
+            <div class="input-con-icono">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path></svg>
+              <input type="url" id="input-url" placeholder="https://mi-empresa.com">
+            </div>
+          </div>
+        </div>
+
+        <div id="formulario-texto" class="formulario-tipo oculto">
+          <div class="grupo-form">
+            <label for="input-texto">Mensaje o texto libre</label>
+            <textarea id="input-texto" rows="3" placeholder="Ingresa el texto aquí..."></textarea>
+          </div>
+        </div>
+
+        <div id="formulario-wifi" class="formulario-tipo oculto">
+          <div class="grid-2-col">
+            <div class="grupo-form">
+              <label for="input-wifi-ssid">Red (SSID)</label>
+              <input type="text" id="input-wifi-ssid" placeholder="Mi_WiFi">
+            </div>
+            <div class="grupo-form">
+              <label for="input-wifi-password">Contraseña</label>
+              <input type="password" id="input-wifi-password" placeholder="Contraseña">
+            </div>
+          </div>
+          <div class="grupo-form">
+            <label for="input-wifi-tipo">Seguridad</label>
+            <select id="input-wifi-tipo">
+              <option value="WPA">WPA/WPA2</option>
+              <option value="WEP">WEP</option>
+              <option value="nopass">Sin Contraseña</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="formulario-contacto" class="formulario-tipo oculto">
+          <div class="grupo-form">
+            <label for="input-vc-nombre">Nombre completo</label>
+            <input type="text" id="input-vc-nombre" placeholder="Ej: Laura García">
+          </div>
+          <div class="grid-2-col">
+            <div class="grupo-form">
+              <label for="input-vc-telefono">Teléfono</label>
+              <input type="tel" id="input-vc-telefono" placeholder="+34 600 000 000">
+            </div>
+            <div class="grupo-form">
+              <label for="input-vc-email">Email</label>
+              <input type="email" id="input-vc-email" placeholder="laura@ejemplo.com">
+            </div>
+          </div>
+        </div>
+        
+        <div id="formulario-whatsapp" class="formulario-tipo oculto">
+          <div class="grupo-form">
+            <label for="input-wa-telefono">Teléfono (con prefijo del país)</label>
+            <div class="input-con-icono">
+              <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+              <input type="tel" id="input-wa-telefono" placeholder="+54 9 11 0000 0000">
+            </div>
+          </div>
+          <div class="grupo-form">
+            <label for="input-wa-mensaje">Mensaje predefinido</label>
+            <input type="text" id="input-wa-mensaje" placeholder="Hola, me interesa tu producto.">
+          </div>
+        </div>
+
+        <div id="formulario-email" class="formulario-tipo oculto">
+          <div class="grupo-form">
+            <label for="input-email-dest">Destinatario</label>
+            <input type="email" id="input-email-dest" placeholder="ventas@ejemplo.com">
+          </div>
+          <div class="grupo-form">
+            <label for="input-email-asunto">Asunto</label>
+            <input type="text" id="input-email-asunto" placeholder="Solicitud de presupuesto">
+          </div>
+          <div class="grupo-form">
+            <label for="input-email-cuerpo">Cuerpo del mensaje</label>
+            <textarea id="input-email-cuerpo" rows="2" placeholder="Quisiera cotizar..."></textarea>
+          </div>
+        </div>
+
+        <div id="formulario-geo" class="formulario-tipo oculto">
+          <div class="grid-2-col">
+            <div class="grupo-form">
+              <label for="input-geo-lat">Latitud</label>
+              <input type="number" step="any" id="input-geo-lat" placeholder="Ej: 40.416775">
+            </div>
+            <div class="grupo-form">
+              <label for="input-geo-lng">Longitud</label>
+              <input type="number" step="any" id="input-geo-lng" placeholder="Ej: -3.703790">
+            </div>
+          </div>
+        </div>
+
+        <div id="formulario-cripto" class="formulario-tipo oculto">
+          <div class="grid-2-col">
+            <div class="grupo-form">
+              <label for="input-cripto-moneda">Moneda</label>
+              <select id="input-cripto-moneda">
+                <option value="BTC">Bitcoin (BTC)</option>
+                <option value="ETH">Ethereum (ETH)</option>
+              </select>
+            </div>
+            <div class="grupo-form">
+              <label for="input-cripto-monto">Monto (Opcional)</label>
+              <input type="number" step="any" id="input-cripto-monto" placeholder="0.05">
+            </div>
+          </div>
+          <div class="grupo-form">
+            <label for="input-cripto-dir">Dirección de la billetera</label>
+            <input type="text" id="input-cripto-dir" placeholder="1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa">
+          </div>
+        </div>
+
+        <!-- Acordeón Personalización -->
+        <div class="acordeon" id="acordeon-personalizacion">
+          <div class="acordeon-cabecera">
+            <h3 class="titulo-seccion mb-0 mt-0">3. Estilo Avanzado (Opcional)</h3>
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icono-flecha"><polyline points="6 9 12 15 18 9"></polyline></svg>
+          </div>
+          <div class="acordeon-contenido oculto" id="contenido-personalizacion">
+            <div class="grupo-form mt-3">
+                <label for="subida-logo">Incrustar Logo (PNG/JPG/SVG)</label>
+                <div class="upload-area">
+                  <input type="file" id="subida-logo" accept="image/png, image/jpeg, image/svg+xml">
+                  <span class="upload-text">Haz clic o arrastra una imagen</span>
+                </div>
+            </div>
+
+            <div class="grid-2-col">
+              <div class="grupo-form">
+                  <label for="estilo-puntos">Forma del Patrón</label>
+                  <select id="estilo-puntos">
+                    <option value="square">Cuadrados</option>
+                    <option value="dots">Redondos</option>
+                    <option value="rounded">Suavizados</option>
+                    <option value="classy">Elegante</option>
+                  </select>
+              </div>
+              <div class="selectores-color grupo-form">
+                <div class="selector-color">
+                  <label for="color-frente">Código</label>
+                  <input type="color" id="color-frente" value="#000000">
+                </div>
+                <div class="selector-color">
+                  <label for="color-fondo">Fondo</label>
+                  <input type="color" id="color-fondo" value="#ffffff">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button id="boton-generar" class="boton boton-primario mt-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          Generar Código QR
+        </button>
+      </main>
+
+      <!-- Lado Derecho: Resultado -->
+      <aside class="panel-cristal panel-derecho">
+        <div id="envoltorio-qr">
+          <div id="contenedor-qr">
+            <!-- Placeholder SVG -->
+            <div class="placeholder-qr">
+              <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="opacity: 0.3;"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><path d="M8 12h8"></path><path d="M12 8v8"></path></svg>
+              <p>Genera tu código primero</p>
+            </div>
+          </div>
+        </div>
+        
+        <div class="grupo-botones-descarga">
+            <button id="boton-ver-grande" class="boton boton-secundario oculto">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path></svg>
+              Ver Ampliado
+            </button>
+            <button id="boton-descargar-png" class="boton boton-secundario oculto">PNG</button>
+            <button id="boton-descargar-svg" class="boton boton-secundario oculto">SVG</button>
+        </div>
+
+        <!-- Historial Lateral -->
+        <div class="seccion-historial mt-5">
+          <h3 class="titulo-seccion">Tus Creaciones</h3>
+          <div id="contenedor-historial" class="lista-historial">
+            <!-- Elementos inyectados por JS -->
+          </div>
+        </div>
+      </aside>
+    </div>
+  </div>
+
   <script type="module" src="js/principal.js"></script>
 </body>
 </html>

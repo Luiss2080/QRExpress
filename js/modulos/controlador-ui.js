@@ -1,10 +1,6 @@
 import { formatearDatosQR, obtenerDatosDeVisualizacion } from '../utilidades/formateadores.js';
+import { Validador } from '../utilidades/validador.js';
 
-/**
- * Controlador UI
- * Se encarga de manejar todos los eventos del DOM, la recolección de datos
- * y la actualización visual de la interfaz.
- */
 export class ControladorUI {
     constructor(generadorQR, gestorHistorial) {
         this.generador = generadorQR;
@@ -12,37 +8,50 @@ export class ControladorUI {
         this.tipoActual = 'url';
         this.urlLogo = null;
         
-        // Elementos del DOM
+        // Elementos del DOM Principales
         this.tarjetasTipo = document.querySelectorAll('.tarjeta-tipo');
         this.formularios = document.querySelectorAll('.formulario-tipo');
         this.botonGenerar = document.getElementById('boton-generar');
-        this.botonDescargarPNG = document.getElementById('boton-descargar-png');
-        this.botonDescargarSVG = document.getElementById('boton-descargar-svg');
         this.mensajeError = document.getElementById('mensaje-error');
         this.contenedorHistorial = document.getElementById('contenedor-historial');
         this.inputLogo = document.getElementById('subida-logo');
         this.envoltorioQR = document.getElementById('envoltorio-qr');
+        this.contenedorQRMini = document.getElementById('contenedor-qr');
+        
+        // Botones de descarga y vista previa
+        this.btnDescargarPNG = document.getElementById('boton-descargar-png');
+        this.btnDescargarSVG = document.getElementById('boton-descargar-svg');
+        this.btnVerGrande = document.getElementById('boton-ver-grande');
+        
+        // Modal
+        this.modal = document.getElementById('modal-qr');
+        this.btnCerrarModal = document.getElementById('btn-cerrar-modal');
+        this.contenedorQRModal = document.getElementById('contenedor-qr-modal');
+        this.modalBtnPng = document.getElementById('modal-descargar-png');
+        this.modalBtnSvg = document.getElementById('modal-descargar-svg');
+        
+        // Acordeón
+        this.acordeonCabecera = document.querySelector('.acordeon-cabecera');
+        this.acordeonContenido = document.getElementById('contenido-personalizacion');
+        this.acordeon = document.getElementById('acordeon-personalizacion');
     }
 
-    /**
-     * Inicializa todos los eventos y la interfaz gráfica
-     */
     inicializar() {
         this.configurarSeleccionDeTipos();
         this.configurarSubidaLogo();
         this.configurarBotonGenerar();
         this.configurarDescargas();
+        this.configurarModal();
+        this.configurarAcordeon();
         this.cargarHistorialVisual();
     }
 
     configurarSeleccionDeTipos() {
         this.tarjetasTipo.forEach(tarjeta => {
             tarjeta.addEventListener('click', () => {
-                // Actualizar estilos activos
                 this.tarjetasTipo.forEach(t => t.classList.remove('activa'));
                 tarjeta.classList.add('activa');
                 
-                // Mostrar formulario correcto
                 this.tipoActual = tarjeta.dataset.tipo;
                 this.formularios.forEach(f => f.classList.add('oculto'));
                 
@@ -62,11 +71,22 @@ export class ControladorUI {
                     const lector = new FileReader();
                     lector.onload = (evento) => {
                         this.urlLogo = evento.target.result;
+                        document.querySelector('.upload-text').textContent = archivo.name;
                     };
                     lector.readAsDataURL(archivo);
                 } else {
                     this.urlLogo = null;
+                    document.querySelector('.upload-text').textContent = 'Haz clic o arrastra una imagen';
                 }
+            });
+        }
+    }
+
+    configurarAcordeon() {
+        if (this.acordeonCabecera) {
+            this.acordeonCabecera.addEventListener('click', () => {
+                this.acordeon.classList.toggle('abierto');
+                this.acordeonContenido.classList.toggle('oculto');
             });
         }
     }
@@ -120,7 +140,7 @@ export class ControladorUI {
             const datosFormateados = formatearDatosQR(this.tipoActual, datosCrudos);
             
             if (!datosFormateados) {
-                this.mostrarError('Faltan campos obligatorios o el formato (ej. Email/Geo) es incorrecto.');
+                this.mostrarError('Revisa que los campos obligatorios estén llenos y los formatos sean válidos.');
                 return;
             }
 
@@ -132,36 +152,63 @@ export class ControladorUI {
             };
 
             try {
+                // Generar en miniatura (panel derecho)
+                this.generador.contenedor = this.contenedorQRMini;
                 this.generador.generar(datosFormateados, configuracionUsuario);
                 
-                // Efectos visuales de éxito
-                if(this.botonDescargarPNG) this.botonDescargarPNG.classList.remove('oculto');
-                if(this.botonDescargarSVG) this.botonDescargarSVG.classList.remove('oculto');
-                if(this.envoltorioQR) this.envoltorioQR.classList.add('con-qr');
-
-                // Guardar en historial local
+                // Mostrar botones
+                [this.btnDescargarPNG, this.btnDescargarSVG, this.btnVerGrande].forEach(b => {
+                    if (b) b.classList.remove('oculto');
+                });
+                
+                // Guardar en historial
                 const datosVisibles = obtenerDatosDeVisualizacion(this.tipoActual, datosFormateados);
                 this.historial.guardar(this.tipoActual, datosVisibles, configuracionUsuario);
                 this.cargarHistorialVisual();
                 
             } catch (error) {
-                this.mostrarError('Error al generar el QR. El contenido podría ser demasiado extenso.');
+                this.mostrarError('Ocurrió un error al generar el código QR.');
                 console.error(error);
             }
         });
     }
 
+    configurarModal() {
+        if (this.btnVerGrande) {
+            this.btnVerGrande.addEventListener('click', () => {
+                if(this.generador.instanciaQR) {
+                    this.generador.contenedor = this.contenedorQRModal;
+                    this.contenedorQRModal.innerHTML = '';
+                    this.generador.instanciaQR.append(this.contenedorQRModal);
+                    this.modal.classList.remove('oculto');
+                }
+            });
+        }
+        
+        if (this.btnCerrarModal) {
+            this.btnCerrarModal.addEventListener('click', () => {
+                this.modal.classList.add('oculto');
+                // Restaurar QR al contenedor original
+                this.generador.contenedor = this.contenedorQRMini;
+                this.contenedorQRMini.innerHTML = '';
+                this.generador.instanciaQR.append(this.contenedorQRMini);
+            });
+        }
+        
+        // Cerrar modal al hacer click fuera
+        this.modal.addEventListener('click', (e) => {
+            if (e.target === this.modal) this.btnCerrarModal.click();
+        });
+    }
+
     configurarDescargas() {
-        if(this.botonDescargarPNG) {
-            this.botonDescargarPNG.addEventListener('click', () => {
-                this.generador.descargar(`QR_${this.tipoActual}_${new Date().getTime()}`, 'png');
-            });
-        }
-        if(this.botonDescargarSVG) {
-            this.botonDescargarSVG.addEventListener('click', () => {
-                this.generador.descargar(`QR_${this.tipoActual}_${new Date().getTime()}`, 'svg');
-            });
-        }
+        const descargarPng = () => this.generador.descargar(`QR_${this.tipoActual}_${new Date().getTime()}`, 'png');
+        const descargarSvg = () => this.generador.descargar(`QR_${this.tipoActual}_${new Date().getTime()}`, 'svg');
+
+        if(this.btnDescargarPNG) this.btnDescargarPNG.addEventListener('click', descargarPng);
+        if(this.btnDescargarSVG) this.btnDescargarSVG.addEventListener('click', descargarSvg);
+        if(this.modalBtnPng) this.modalBtnPng.addEventListener('click', descargarPng);
+        if(this.modalBtnSvg) this.modalBtnSvg.addEventListener('click', descargarSvg);
     }
 
     cargarHistorialVisual() {
@@ -169,7 +216,7 @@ export class ControladorUI {
         this.contenedorHistorial.innerHTML = '';
 
         if (elementosHistorial.length === 0) {
-            this.contenedorHistorial.innerHTML = '<p class="texto-vacio">Aún no has generado ningún código QR.</p>';
+            this.contenedorHistorial.innerHTML = '<p class="texto-vacio">No hay historial todavía.</p>';
             return;
         }
 
@@ -200,8 +247,6 @@ export class ControladorUI {
         if (mensaje) {
             this.mensajeError.textContent = mensaje;
             this.mensajeError.style.display = 'block';
-            this.mensajeError.classList.add('animar-shake');
-            setTimeout(() => this.mensajeError.classList.remove('animar-shake'), 500);
         } else {
             this.mensajeError.style.display = 'none';
         }
