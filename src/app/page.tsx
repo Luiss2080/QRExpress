@@ -1,12 +1,28 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { QrCode, Upload, Camera, Settings2, Download, Zap, Link as LinkIcon, Share2, Mail, MapPin } from 'lucide-react';
+import QRCode from 'qrcode';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'individual' | 'masivo' | 'escaner'>('individual');
   const [qrType, setQrType] = useState<'url' | 'social' | 'vcard' | 'email' | 'location'>('url');
+  
+  const [qrData, setQrData] = useState('https://ejemplo.com');
+  const [qrColor, setQrColor] = useState('#0f172a');
+  const [qrImage, setQrImage] = useState('');
+
+  useEffect(() => {
+    QRCode.toDataURL(qrData || 'https://ejemplo.com', {
+      color: {
+        dark: qrColor,
+        light: '#ffffff'
+      },
+      width: 400,
+      margin: 2
+    }).then(url => setQrImage(url)).catch(console.error);
+  }, [qrData, qrColor]);
 
   return (
     <div className="min-h-screen bg-background text-foreground transition-colors duration-300">
@@ -132,6 +148,8 @@ export default function Home() {
                       <label className="block text-sm font-medium mb-2">Destino (URL)</label>
                       <input 
                         type="text" 
+                        value={qrData}
+                        onChange={(e) => setQrData(e.target.value)}
                         placeholder="https://ejemplo.com"
                         className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-border/50 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
                       />
@@ -150,7 +168,12 @@ export default function Home() {
                           <label className="block text-xs text-muted-foreground mb-1">Color Principal</label>
                           <div className="flex gap-2">
                             {['#0f172a', '#4f46e5', '#ec4899', '#10b981'].map(c => (
-                              <button key={c} className="w-8 h-8 rounded-full border-2 border-white dark:border-slate-800 shadow-sm" style={{backgroundColor: c}} />
+                              <button 
+                                key={c} 
+                                onClick={() => setQrColor(c)}
+                                className={`w-8 h-8 rounded-full border-2 ${qrColor === c ? 'border-primary scale-110' : 'border-white dark:border-slate-800'} shadow-sm transition-all`} 
+                                style={{backgroundColor: c}} 
+                              />
                             ))}
                           </div>
                         </div>
@@ -191,17 +214,24 @@ export default function Home() {
               <div className="w-full md:w-80 flex flex-col items-center border-l border-border/50 pl-0 md:pl-10 pt-10 md:pt-0">
                 <h3 className="text-sm font-semibold text-muted-foreground mb-8">Vista Previa</h3>
                 
-                <div className="w-64 h-64 bg-white rounded-2xl p-4 shadow-xl mb-8 relative group cursor-pointer hover:scale-105 transition-transform duration-300">
-                  {/* Fake QR for UI visual */}
-                  <div className="w-full h-full bg-[url('https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=Premium-QR')] bg-contain bg-no-repeat bg-center opacity-90 group-hover:opacity-100 transition-opacity" />
-                  <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-colors rounded-2xl" />
+                <div className="w-64 h-64 bg-white rounded-2xl p-4 shadow-xl mb-8 relative group cursor-pointer hover:scale-105 transition-transform duration-300 flex items-center justify-center">
+                  {qrImage ? (
+                    <img src={qrImage} alt="Código QR Generado" className="w-full h-full object-contain" />
+                  ) : (
+                    <div className="w-full h-full bg-secondary/20 animate-pulse rounded-xl" />
+                  )}
+                  <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-colors rounded-2xl pointer-events-none" />
                 </div>
 
                 <div className="w-full space-y-3">
-                  <button className="w-full flex items-center justify-center gap-2 py-3 bg-primary text-white rounded-xl font-medium shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all hover:-translate-y-0.5">
+                  <a 
+                    href={qrImage} 
+                    download="codigo-qr.png"
+                    className="w-full flex items-center justify-center gap-2 py-3 bg-primary text-white rounded-xl font-medium shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all hover:-translate-y-0.5"
+                  >
                     <Download className="w-5 h-5" />
-                    Descargar Alta Calidad
-                  </button>
+                    Descargar PNG
+                  </a>
                   <div className="grid grid-cols-2 gap-3">
                     <button className="flex items-center justify-center gap-2 py-2 bg-secondary/50 rounded-xl font-medium text-sm hover:bg-secondary transition-colors">
                       SVG (Vector)
