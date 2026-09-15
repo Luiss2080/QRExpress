@@ -1,34 +1,37 @@
-# Especificación: Generador QR Pro (Versión Español)
+# Especificación: Generador QR Ultimate (Versión Español)
 
 ## Contexto
-Generador de códigos QR avanzado de código abierto (Vanilla JS, HTML, CSS) diseñado para profesionales. Esta herramienta genera códigos QR del lado del cliente utilizando la librería `qr-code-styling`, ofreciendo una personalización exhaustiva y garantizando privacidad total.
+Generador de códigos QR definitivo de código abierto (Vanilla JS). Incluye capacidades de nivel empresarial como generación masiva (CSV), decodificación (Lector QR por webcam), temas oscuros/claros adaptables, y exportaciones en PDF.
 
 ## Usuarios
-- **Usuario Profesional**: Diseñadores, agencias y comerciantes que necesitan generar códigos en masa para marketing, con el logo corporativo incrustado y soporte vectorial.
+- **Usuario Profesional / Enterprise**: Necesita generar decenas de QRs de golpe (Ej: invitaciones), necesita escanear QRs para validarlos, y necesita integraciones sociales pre-empaquetadas.
 
 ## Historias de Usuario
-1. Como Profesional, quiero generar QRs de ubicaciones y emails de manera sencilla.
-2. Como Profesional, quiero generar direcciones de Bitcoin/Ethereum en QR para recibir pagos.
-3. Como Profesional, quiero elegir entre puntos cuadrados o redondeados para adaptar el QR al *branding* de mi marca.
-4. Como Profesional, quiero poder exportar los códigos en formato SVG vectorial.
+1. Como Profesional, quiero subir un CSV para generar e imprimir 100 QRs en un solo click.
+2. Como Profesional, quiero usar mi webcam para leer el contenido de un QR que me pasaron.
+3. Como Profesional, quiero que la interfaz tenga un Modo Oscuro para trabajar de noche sin cansarme la vista.
+4. Como Profesional, quiero generar QRs para Instagram/LinkedIn y que el logo se ponga solo.
+5. Como Profesional, quiero exportar QRs directamente en PDF para imprimirlos.
 
 ## Requisitos Funcionales (Notación EARS)
 
 ### RF-1: Formatos de Entrada
-- **RF-1.1**: CUANDO el usuario seleccione el tipo "Email", el sistema DEBERÁ formatearlo bajo el estándar RFC (`mailto:dest?subject=...`).
-- **RF-1.2**: CUANDO el usuario seleccione el tipo "Geo", el sistema DEBERÁ asegurar que Latitud y Longitud sean coordenadas flotantes válidas y generar el formato `geo:lat,lng`.
-- **RF-1.3**: CUANDO el usuario seleccione el tipo "Cripto", el sistema DEBERÁ estructurarlo como `<bitcoin|ethereum>:<direccion>?amount=<monto>`.
-- **RF-1.4**: SI los datos ingresados no superan las validaciones formales, el sistema DEBERÁ mostrar una advertencia visual.
+- **RF-1.1**: CUANDO el usuario seleccione Social, el sistema DEBERÁ estructurar la URL según la red social seleccionada.
 
 ### RF-2: Personalización Gráfica
-- **RF-2.1**: SIEMPRE el sistema DEBERÁ proveer selectores nativos de color para el frente y el fondo del código QR.
-- **RF-2.2**: CUANDO el usuario inserte una imagen (Logo), el sistema DEBERÁ incrustarlo en el objeto de configuración del motor QR en formato Base64 a través de `FileReader`.
-- **RF-2.3**: SIEMPRE el sistema DEBERÁ permitir cambiar el estilo de dibujo de los puntos de datos (ej. cuadrados, redondeados, puntos).
+- **RF-2.1**: SIEMPRE el sistema DEBERÁ proveer selectores de color.
+- **RF-2.2**: CUANDO el usuario seleccione una plantilla Social, el sistema DEBERÁ incrustar automáticamente el logotipo oficial (Base64 pre-cargado) de la red social en el centro del QR.
 
-### RF-3: Exportación
-- **RF-3.1**: CUANDO se genera el código exitosamente, el sistema DEBERÁ revelar las opciones de descarga en PNG y SVG.
-- **RF-3.2**: CUANDO se solicita la descarga, el archivo resultante DEBERÁ tener un prefijo único `QR_<tipo>_<timestamp>`.
+### RF-3: Exportación y Múltiples Formatos
+- **RF-3.1**: CUANDO se genera el código exitosamente, el sistema DEBERÁ habilitar la descarga en PNG, SVG y PDF.
 
-### RF-4: Arquitectura e Historial
-- **RF-4.1**: EL SISTEMA DEBERÁ separar las responsabilidades mediante el uso de ES Modules nativos (Configuración, Validadores, Formateadores, Controladores de Interfaz).
-- **RF-4.2**: CUANDO una generación sea exitosa, el sistema DEBERÁ guardar sus datos y su configuración estética en el `localStorage` (limitado a los 15 más recientes).
+### RF-4: Temas de UI (Gestor de Temas)
+- **RF-4.1**: CUANDO el usuario presione el interruptor de tema, el sistema DEBERÁ intercambiar los atributos HTML `data-tema` entre `claro` y `oscuro`.
+- **RF-4.2**: SIEMPRE el sistema DEBERÁ recordar el último tema usado en el `localStorage`.
+
+### RF-5: Generador Masivo (Bulk)
+- **RF-5.1**: CUANDO el usuario suba un archivo `.csv`, el sistema DEBERÁ iterar cada fila, generar un QR en memoria y empaquetarlos todos en un `.zip` utilizando `JSZip`.
+
+### RF-6: Lector de QR (Escáner)
+- **RF-6.1**: CUANDO el usuario active el Escáner, el sistema DEBERÁ solicitar permisos de cámara e iniciar el módulo `html5-qrcode`.
+- **RF-6.2**: CUANDO la cámara detecte un QR, el sistema DEBERÁ pausar el escáner y mostrar el contenido decodificado en pantalla.
