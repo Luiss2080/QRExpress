@@ -1,21 +1,22 @@
-# Contexto del Agente para Generador QR Comercial (Pro)
+# Contexto del Agente para Generador QR (ES)
 
 ## Proyecto
-Generador QR de grado comercial "Pro" con arquitectura modular en el Frontend. No requiere backend. Utiliza `qr-code-styling` para soportar logos, formas personalizadas y múltiples formatos de exportación (SVG, PNG).
+Un Generador de Códigos QR "Enterprise" desarrollado íntegramente en Vanilla JavaScript utilizando módulos ES6. 
 
-## Arquitectura y Módulos (ES6)
-- El código JavaScript debe seguir un patrón modular puro.
-- **Punto de Entrada**: `js/app.js` orquesta los controladores.
-- **Módulos**: `js/modules/` contiene las responsabilidades aisladas (UI, Generador, Historial).
-- **Utilidades**: `js/utils/` contiene funciones puras (formateo).
-- Los módulos se comunican preferiblemente mediante inyección de dependencias o sistema de eventos/callbacks, evitando el acoplamiento duro.
+## Estándares de Codificación
+- **Idioma Obligatorio**: Todo el código fuente (nombres de variables, clases, módulos, constantes y comentarios) DEBE estar estrictamente en español. Excepciones permitidas solo para APIs nativas o métodos de librerías de terceros (ej. `.getElementById()`).
+- **Arquitectura Limpia**: Separación estricta de responsabilidades:
+  - `configuracion/`: Variables y constantes mágicas.
+  - `utilidades/`: Funciones puras (validación, parseo).
+  - `modulos/`: Clases orientadas a objetos que manejan lógica con estado o manipulación pesada del DOM.
+  - `principal.js`: Punto de entrada unificado.
 
-## Reglas SDD
-- **La especificación es la única fuente de verdad**. Si un comportamiento no está en `docs/sdd/spec.md`, no se debe implementar.
-- Cualquier adición de feature debe primero especificarse usando notación EARS.
-- Todos los commits/cambios deben ser verificados contra los Criterios de Finalización en la especificación.
+## Reglas de SDD (Spec-Driven Development)
+- **Documento Maestro**: `spec.md` es la única fuente de la verdad para el comportamiento del software. 
+- **Verificación**: Todo cambio en el código debe alinearse con una Historia de Usuario o Requisito Funcional documentado.
+- No añadas "features ocultas". Todo debe ser especificado en notación EARS primero.
 
-## UI/UX y Tecnologías
-- **Estética**: Premium, Glassmorphism avanzado, animaciones suaves, gradientes y micro-interacciones.
-- **Tecnologías**: HTML5 semántico, CSS3 moderno (Variables, Flexbox/Grid, Animaciones clave), JavaScript ES6+ (Módulos).
-- **Dependencias Permitidas**: Librerías CDN ligeras (`qr-code-styling`). No se permite jQuery.
+## Interfaz Gráfica (UI)
+- Priorizar la UX, ofreciendo alertas de error si las validaciones (ej. Email inválido o Coordenada incorrecta) fallan.
+- Uso de variables CSS para consistencia de tema.
+- Mantener diseño "Glassmorphism" con cuadrículas responsivas.
