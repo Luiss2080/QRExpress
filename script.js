@@ -98,6 +98,10 @@ function setupGenerate() {
             // Mostrar botón de descarga (RF-3.1)
             btnDescargar.classList.remove('hidden');
             
+            // Activar efecto de brillo de fondo
+            const wrapper = document.getElementById('qrcode-wrapper');
+            if(wrapper) wrapper.classList.add('has-qr');
+
             // Guardar en historial (RF-4.1)
             saveToHistory(currentType, getDisplayData(currentType, qrData));
             
