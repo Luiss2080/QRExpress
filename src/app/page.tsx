@@ -1,9 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { QrCode, Upload, Camera, Settings2, Download, Zap, Link as LinkIcon, Share2, Mail, MapPin } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { QrCode, Upload, Camera, Settings2, Download, Zap, Link as LinkIcon, Share2, Mail, MapPin, HelpCircle, X } from 'lucide-react';
 import QRCode from 'qrcode';
+import Link from 'next/link';
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'individual' | 'masivo' | 'escaner'>('individual');
@@ -12,6 +13,8 @@ export default function Home() {
   const [qrData, setQrData] = useState('https://ejemplo.com');
   const [qrColor, setQrColor] = useState('#0f172a');
   const [qrImage, setQrImage] = useState('');
+  
+  const [showSettingsModal, setShowSettingsModal] = useState(false);
 
   useEffect(() => {
     QRCode.toDataURL(qrData || 'https://ejemplo.com', {
@@ -40,8 +43,9 @@ export default function Home() {
               </span>
             </div>
             
-            <div className="flex items-center gap-4">
-              {/* Fake Auth button for SaaS feel */}
+              <Link href="/ayuda" className="px-4 py-2 rounded-full text-sm font-medium hover:bg-secondary transition-colors flex items-center gap-2">
+                <HelpCircle className="w-4 h-4" /> Manual
+              </Link>
               <button className="px-4 py-2 rounded-full text-sm font-medium hover:bg-secondary transition-colors">
                 Ingresar
               </button>
@@ -160,7 +164,9 @@ export default function Home() {
                         <label className="text-sm font-medium flex items-center gap-2">
                           <Settings2 className="w-4 h-4" /> Personalización Visual
                         </label>
-                        <span className="text-xs bg-accent/10 text-accent px-2 py-1 rounded-full font-semibold">PRO</span>
+                        <button onClick={() => setShowSettingsModal(true)} className="text-xs bg-primary text-white px-3 py-1.5 rounded-full font-semibold hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20">
+                          Ajustes Avanzados
+                        </button>
                       </div>
                       
                       <div className="grid grid-cols-2 gap-4">
@@ -246,6 +252,51 @@ export default function Home() {
           </div>
         </motion.div>
       </main>
+
+      {/* Advanced Settings Modal */}
+      <AnimatePresence>
+        {showSettingsModal && (
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
+          >
+            <motion.div 
+              initial={{ scale: 0.95, y: 20 }} 
+              animate={{ scale: 1, y: 0 }} 
+              exit={{ scale: 0.95, y: 20 }}
+              className="bg-background rounded-3xl shadow-2xl p-6 md:p-8 max-w-lg w-full border border-border/50 relative"
+            >
+              <button onClick={() => setShowSettingsModal(false)} className="absolute top-6 right-6 text-muted-foreground hover:text-foreground bg-secondary/50 p-2 rounded-full transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+              <h3 className="text-2xl font-bold mb-2">Ajustes Avanzados de QR</h3>
+              <p className="text-muted-foreground mb-6">Configura opciones premium (próximamente conectadas con el backend SaaS).</p>
+              
+              <div className="space-y-5">
+                <div>
+                  <label className="block text-sm font-medium mb-2">Incrustar Logotipo Central</label>
+                  <div className="w-full h-24 border-2 border-dashed border-border/60 rounded-xl flex items-center justify-center cursor-pointer hover:bg-secondary/20 transition-colors">
+                    <span className="text-sm font-medium text-muted-foreground flex items-center gap-2"><Upload className="w-4 h-4" /> Subir Imagen (PRO)</span>
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-2">Nivel de Corrección de Errores</label>
+                  <select className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-border/50 focus:outline-none">
+                    <option>Alta (Recomendado para Logos)</option>
+                    <option>Media</option>
+                    <option>Baja</option>
+                  </select>
+                </div>
+                <button onClick={() => setShowSettingsModal(false)} className="w-full py-3 mt-4 bg-foreground text-background rounded-xl font-medium">
+                  Guardar y Cerrar
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
