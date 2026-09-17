@@ -47,7 +47,7 @@ export default function Ayuda() {
                 </li>
                 <li className="flex items-start gap-3">
                   <CheckCircle2 className="w-5 h-5 text-accent mt-0.5" />
-                  <span>Pulsa "Descargar PNG" para obtener un archivo transparente de alta calidad.</span>
+                  <span>Pulsa &ldquo;Descargar PNG&rdquo; para obtener un archivo transparente de alta calidad.</span>
                 </li>
               </ul>
             </div>
