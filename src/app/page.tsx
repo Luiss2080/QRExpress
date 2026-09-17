@@ -84,7 +84,7 @@ export default function Home() {
                 <QrCode className="text-white w-6 h-6" />
               </div>
               <span className="font-bold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
-                QR Pro Ultimate
+                QRExpress
               </span>
             </div>
             <div className="flex items-center gap-4">

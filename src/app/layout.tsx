@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "QR Pro Ultimate",
-  description: "El Generador, Lector y Procesador de Códigos QR Definitivo.",
+  title: "QRExpress",
+  description: "Generador de códigos QR en tiempo real, construido con Next.js.",
   icons: {
     icon: '/icon',
   },
