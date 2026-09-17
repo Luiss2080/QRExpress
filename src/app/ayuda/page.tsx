@@ -27,7 +27,7 @@ export default function Ayuda() {
           <h1 className="text-4xl md:text-5xl font-extrabold tracking-tight mb-4">
             Manual de Uso
           </h1>
-          <p className="text-xl text-muted-foreground">Aprende a aprovechar al máximo QR Pro Ultimate.</p>
+          <p className="text-xl text-muted-foreground">Aprende a aprovechar al máximo QRExpress.</p>
         </motion.div>
 
         <div className="space-y-12">
