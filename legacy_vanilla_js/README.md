@@ -1,3 +1,15 @@
+> [!WARNING]
+> **Archivo histórico / legacy — no forma parte de la aplicación actual.**
+> Este directorio contiene la versión Vanilla JS original del proyecto,
+> anterior a la migración a Next.js (ver el `README.md` en la raíz del
+> repositorio para la aplicación real). `next build` solo compila
+> `src/app/`; nada de `legacy_vanilla_js/` se ejecuta, se importa ni se
+> despliega. Se conserva únicamente como referencia histórica de diseño y
+> no recibe mantenimiento activo. Las afirmaciones de este README (estado
+> "Producción", lector por webcam, generación masiva, etc.) describen esa
+> versión antigua y **no** han sido re-verificadas contra el código
+> Next.js actual.
+
 <div align="center">
   <img src="https://img.icons8.com/color/96/000000/qr-code.png" alt="QR Pro Ultimate Logo" width="100"/>
   
