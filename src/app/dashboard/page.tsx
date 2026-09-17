@@ -45,11 +45,12 @@ export default function Dashboard() {
             <h1 className="text-3xl font-bold tracking-tight mb-2">Panel de Analíticas</h1>
             <p className="text-muted-foreground">Mide el rendimiento de tus códigos QR Dinámicos.</p>
           </div>
-          <div className="flex gap-2 bg-secondary/50 p-1 rounded-xl">
+          <div role="group" aria-label="Rango de fechas" className="flex gap-2 bg-secondary/50 p-1 rounded-xl">
             {['24h', '7d', '30d'].map(range => (
-              <button 
+              <button
                 key={range}
                 onClick={() => setTimeRange(range)}
+                aria-pressed={timeRange === range}
                 className={`px-4 py-1.5 rounded-lg text-sm font-medium transition-colors ${timeRange === range ? 'bg-background shadow-sm' : 'text-muted-foreground hover:text-foreground'}`}
               >
                 {range}
@@ -94,7 +95,7 @@ export default function Dashboard() {
           >
             <div className="flex justify-between items-center mb-6">
               <h3 className="text-lg font-bold">Rendimiento (Escaneos)</h3>
-              <button className="text-muted-foreground hover:text-primary transition-colors">
+              <button aria-label="Descargar reporte de rendimiento" className="text-muted-foreground hover:text-primary transition-colors">
                 <Download className="w-5 h-5" />
               </button>
             </div>
