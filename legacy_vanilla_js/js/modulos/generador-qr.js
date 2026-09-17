@@ -47,8 +47,11 @@ export class GeneradorQR {
             }
         });
 
-        // Limpiar contenedor previo e inyectar nuevo QR
-        this.contenedor.innerHTML = "";
+        // Limpiar contenedor previo e inyectar nuevo QR.
+        // Se usa replaceChildren() en vez de innerHTML = "" (no hay
+        // diferencia funcional aquí porque no se inserta HTML desde string,
+        // pero evita el patrón de asignar a innerHTML por costumbre).
+        this.contenedor.replaceChildren();
         this.instanciaQR.append(this.contenedor);
         
         return true;
