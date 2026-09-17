@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 import { ArrowLeft, Activity, Users, MapPin, Download, QrCode } from 'lucide-react';
 import Link from 'next/link';
+import { computeDeviceShare, formatScanCount } from '@/lib/dashboard-utils';
 
 const data = [
   { name: 'Lun', escaneos: 400 },
@@ -15,6 +16,21 @@ const data = [
   { name: 'Sab', escaneos: 850 },
   { name: 'Dom', escaneos: 900 },
 ];
+
+// Datos de ejemplo: este dashboard aún no está conectado a un backend de
+// analíticas real (ver docs/sdd/spec.md, RF-7 pendiente). Los conteos
+// crudos se guardan aquí y el porcentaje de cada dispositivo se calcula
+// con `computeDeviceShare` en vez de hardcodear el "%" directamente, para
+// que el cálculo sea el mismo que se prueba en dashboard-utils.test.ts.
+const DEVICE_SCAN_COUNTS = [
+  { device: 'iPhone', scans: 1200 },
+  { device: 'Android', scans: 700 },
+  { device: 'Desktop', scans: 100 },
+];
+
+const TOTAL_SCANS = 3900;
+const UNIQUE_VISITORS = 2140;
+const DEVICE_BAR_COLORS = ['bg-primary', 'bg-accent', 'bg-green-500'];
 
 export default function Dashboard() {
   const [timeRange, setTimeRange] = useState('7d');
@@ -62,8 +78,8 @@ export default function Dashboard() {
         {/* Stats Row */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {[
-            { label: 'Escaneos Totales', value: '3,900', icon: Activity, color: 'text-primary' },
-            { label: 'Visitantes Únicos', value: '2,140', icon: Users, color: 'text-accent' },
+            { label: 'Escaneos Totales', value: formatScanCount(TOTAL_SCANS), icon: Activity, color: 'text-primary' },
+            { label: 'Visitantes Únicos', value: formatScanCount(UNIQUE_VISITORS), icon: Users, color: 'text-accent' },
             { label: 'QRs Activos', value: '14', icon: QrCode, color: 'text-green-500' },
             { label: 'País Principal', value: 'España', icon: MapPin, color: 'text-orange-500' },
           ].map((stat, i) => (
@@ -123,18 +139,14 @@ export default function Dashboard() {
           >
             <h3 className="text-lg font-bold mb-6">Top Dispositivos</h3>
             <div className="space-y-4">
-              {[
-                { dev: 'iPhone', p: 60, col: 'bg-primary' },
-                { dev: 'Android', p: 35, col: 'bg-accent' },
-                { dev: 'Desktop', p: 5, col: 'bg-green-500' },
-              ].map(d => (
-                <div key={d.dev}>
+              {computeDeviceShare(DEVICE_SCAN_COUNTS).map((share, i) => (
+                <div key={share.device}>
                   <div className="flex justify-between text-sm mb-1 font-medium">
-                    <span>{d.dev}</span>
-                    <span>{d.p}%</span>
+                    <span>{share.device}</span>
+                    <span>{share.percentage}%</span>
                   </div>
                   <div className="w-full bg-secondary/50 h-2 rounded-full overflow-hidden">
-                    <div className={`h-full ${d.col}`} style={{ width: `${d.p}%` }} />
+                    <div className={`h-full ${DEVICE_BAR_COLORS[i % DEVICE_BAR_COLORS.length]}`} style={{ width: `${share.percentage}%` }} />
                   </div>
                 </div>
               ))}

@@ -2,18 +2,26 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { QrCode, Upload, Camera, Settings2, Download, Zap, Link as LinkIcon, Share2, Mail, MapPin, HelpCircle, X, Check } from 'lucide-react';
-import QRCode from 'qrcode';
+import { QrCode, Upload, Camera, Settings2, Download, Zap, Link as LinkIcon, Share2, Mail, MapPin, HelpCircle, X, Check, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 import { toast } from 'sonner';
+import { generateQrDataUrl, isBlankInput, normalizeQrInput, type QrContentType } from '@/lib/qr-utils';
+
+const QR_TYPE_OPTIONS: { id: QrContentType; icon: typeof LinkIcon; label: string }[] = [
+  { id: 'url', icon: LinkIcon, label: 'Enlace URL' },
+  { id: 'social', icon: Share2, label: 'Redes Sociales' },
+  { id: 'email', icon: Mail, label: 'Correo' },
+  { id: 'location', icon: MapPin, label: 'Ubicación' },
+];
 
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'individual' | 'masivo' | 'escaner'>('individual');
-  const [qrType, setQrType] = useState<'url' | 'social' | 'vcard' | 'email' | 'location'>('url');
+  const [qrType, setQrType] = useState<QrContentType>('url');
 
   const [qrData, setQrData] = useState('https://ejemplo.com');
   const [qrColor, setQrColor] = useState('#0f172a');
   const [qrImage, setQrImage] = useState('');
+  const [qrError, setQrError] = useState<string | null>(null);
   const [logoImage, setLogoImage] = useState<string | null>(null);
 
   const [showSettingsModal, setShowSettingsModal] = useState(false);
@@ -39,18 +47,47 @@ export default function Home() {
     return () => document.removeEventListener('keydown', onKeyDown);
   }, [showSettingsModal]);
 
-  useEffect(() => {
-    QRCode.toDataURL(qrData || 'https://ejemplo.com', {
-      color: {
-        dark: qrColor,
-        light: '#ffffff'
-      },
-      width: 400,
-      margin: 2
-    }).then(url => setQrImage(url)).catch(console.error);
-  }, [qrData, qrColor]);
+  // Bug corregido: antes, un campo vacío generaba silenciosamente el QR de
+  // ejemplo ("https://ejemplo.com") en lugar de reflejar que no hay
+  // contenido que codificar. `isEmptyInput` se deriva directamente del
+  // estado en cada render, en vez de sincronizarse con un `setState` dentro
+  // del efecto (lo que provocaría un renderizado en cascada evitable).
+  const isEmptyInput = isBlankInput(qrData);
 
-  const handleDownload = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  useEffect(() => {
+    if (isEmptyInput) {
+      return;
+    }
+
+    let cancelled = false;
+    const normalized = normalizeQrInput(qrData, qrType);
+
+    generateQrDataUrl(normalized, {
+      color: { dark: qrColor, light: '#ffffff' },
+      width: 400,
+      margin: 2,
+    }).then((result) => {
+      if (cancelled) return;
+      if (result.ok) {
+        setQrImage(result.dataUrl);
+        setQrError(null);
+      } else {
+        // Bug corregido: antes, un texto que excedía la capacidad del QR
+        // (la librería `qrcode` lanza una excepción) se perdía en
+        // `console.error` y el usuario se quedaba viendo el QR anterior sin
+        // ninguna explicación.
+        setQrImage('');
+        setQrError(result.error);
+        toast.error('No se pudo generar el código QR', { description: result.error });
+      }
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [qrData, qrType, qrColor, isEmptyInput]);
+
+  const handleDownload = () => {
     toast.success('¡Código QR generado y descargado con éxito!', {
       icon: <Check className="text-green-500 w-5 h-5" />
     });
@@ -68,7 +105,7 @@ export default function Home() {
                 <QrCode className="text-white w-6 h-6" />
               </div>
               <span className="font-bold text-xl tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
-                QR Pro Ultimate
+                QRExpress
               </span>
             </div>
             <div className="flex items-center gap-4">
@@ -190,15 +227,10 @@ export default function Home() {
                   
                   {/* Type Selector */}
                   <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-8">
-                    {[
-                      { id: 'url', icon: LinkIcon, label: 'Enlace URL' },
-                      { id: 'social', icon: Share2, label: 'Redes Sociales' },
-                      { id: 'email', icon: Mail, label: 'Correo' },
-                      { id: 'location', icon: MapPin, label: 'Ubicación' },
-                    ].map((t) => (
+                    {QR_TYPE_OPTIONS.map((t) => (
                       <button
                         key={t.id}
-                        onClick={() => setQrType(t.id as any)}
+                        onClick={() => setQrType(t.id)}
                         aria-pressed={qrType === t.id}
                         className={`flex flex-col items-center justify-center p-4 rounded-2xl border transition-all ${qrType === t.id ? 'border-primary bg-primary/5 text-primary' : 'border-border/50 hover:border-primary/30 text-muted-foreground'}`}
                       >
@@ -218,8 +250,16 @@ export default function Home() {
                         value={qrData}
                         onChange={(e) => setQrData(e.target.value)}
                         placeholder="https://ejemplo.com"
-                        className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-border/50 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                        aria-invalid={!isEmptyInput && qrError ? true : undefined}
+                        aria-describedby={!isEmptyInput && qrError ? 'qr-data-error' : undefined}
+                        className={`w-full px-4 py-3 rounded-xl bg-secondary/50 border focus:outline-none focus:ring-2 transition-all ${!isEmptyInput && qrError ? 'border-red-500 focus:ring-red-500/50' : 'border-border/50 focus:ring-primary/50'}`}
                       />
+                      {!isEmptyInput && qrError && (
+                        <p id="qr-data-error" role="alert" aria-live="polite" className="mt-2 flex items-start gap-2 text-sm text-red-500">
+                          <AlertTriangle className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                          <span>{qrError}</span>
+                        </p>
+                      )}
                     </div>
                     
                     <div className="pt-4 border-t border-border/50">
@@ -267,8 +307,11 @@ export default function Home() {
                   </div>
                   <h2 className="text-2xl font-bold mb-3">Generación Masiva (CSV)</h2>
                   <p className="text-muted-foreground max-w-sm mb-8">Sube tu archivo .csv y generaremos un archivo .zip con miles de códigos QR en segundos gracias a los Web Workers.</p>
-                  <button className="px-6 py-3 bg-foreground text-background rounded-xl font-medium hover:scale-105 transition-transform">
-                    Seleccionar Archivo CSV
+                  {/* Aún no implementado: no hay lógica de lectura de CSV ni
+                      de empaquetado en .zip conectada a este botón. Se
+                      deshabilita para no simular una función inexistente. */}
+                  <button disabled aria-disabled="true" title="Próximamente" className="px-6 py-3 bg-foreground text-background rounded-xl font-medium opacity-50 cursor-not-allowed">
+                    Seleccionar Archivo CSV (próximamente)
                   </button>
                 </motion.div>
               )}
@@ -278,8 +321,11 @@ export default function Home() {
                   <div className="w-full max-w-md aspect-square bg-black/5 rounded-3xl border-2 border-dashed border-border/60 flex flex-col items-center justify-center relative overflow-hidden">
                     <Camera className="w-12 h-12 text-muted-foreground mb-4" />
                     <p className="text-sm text-muted-foreground font-medium">Cámara no inicializada</p>
-                    <button className="mt-4 px-5 py-2 bg-primary text-white rounded-lg font-medium text-sm">
-                      Permitir Cámara
+                    {/* Aún no implementado: no hay integración de
+                        getUserMedia ni de un decodificador de QR. Se
+                        deshabilita para no simular una función inexistente. */}
+                    <button disabled aria-disabled="true" title="Próximamente" className="mt-4 px-5 py-2 bg-primary text-white rounded-lg font-medium text-sm opacity-50 cursor-not-allowed">
+                      Permitir Cámara (próximamente)
                     </button>
                   </div>
                 </motion.div>
@@ -304,27 +350,47 @@ export default function Home() {
                       )}
                     </>
                   ) : (
-                    <div className="w-full h-full bg-secondary/20 animate-pulse rounded-xl" />
+                    <div className="w-full h-full flex flex-col items-center justify-center gap-2 bg-secondary/20 rounded-xl text-center px-4">
+                      <QrCode className="w-8 h-8 text-muted-foreground/60" />
+                      <p className="text-xs text-muted-foreground">
+                        {!isEmptyInput && qrError ? 'No se pudo generar el QR' : 'Escribe un destino para generar tu QR'}
+                      </p>
+                    </div>
                   )}
                   <div className="absolute inset-0 bg-primary/0 group-hover:bg-primary/5 transition-colors rounded-2xl pointer-events-none" />
                 </div>
 
+                {logoImage && qrImage && (
+                  <p className="text-xs text-muted-foreground text-center mb-4 -mt-4">
+                    El logo se ve en la vista previa, pero todavía no se incrusta en el archivo PNG descargado.
+                  </p>
+                )}
+
                 <div className="w-full space-y-3">
-                  <a 
-                    href={qrImage} 
-                    download="codigo-qr.png"
-                    onClick={handleDownload}
-                    className="w-full flex items-center justify-center gap-2 py-3 bg-primary text-white rounded-xl font-medium shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all hover:-translate-y-0.5"
-                  >
-                    <Download className="w-5 h-5" />
-                    Descargar PNG
-                  </a>
-                  <div className="grid grid-cols-2 gap-3">
-                    <button className="flex items-center justify-center gap-2 py-2 bg-secondary/50 rounded-xl font-medium text-sm hover:bg-secondary transition-colors">
-                      SVG (Vector)
+                  {qrImage ? (
+                    <a
+                      href={qrImage}
+                      download="codigo-qr.png"
+                      onClick={handleDownload}
+                      className="w-full flex items-center justify-center gap-2 py-3 bg-primary text-white rounded-xl font-medium shadow-lg shadow-primary/25 hover:shadow-xl hover:shadow-primary/30 transition-all hover:-translate-y-0.5"
+                    >
+                      <Download className="w-5 h-5" />
+                      Descargar PNG
+                    </a>
+                  ) : (
+                    <button disabled aria-disabled="true" className="w-full flex items-center justify-center gap-2 py-3 bg-secondary/50 text-muted-foreground rounded-xl font-medium cursor-not-allowed">
+                      <Download className="w-5 h-5" />
+                      Descargar PNG
                     </button>
-                    <button className="flex items-center justify-center gap-2 py-2 bg-secondary/50 rounded-xl font-medium text-sm hover:bg-secondary transition-colors">
-                      PDF (Print)
+                  )}
+                  <div className="grid grid-cols-2 gap-3">
+                    {/* Aún no implementado: no hay conversión a SVG ni a
+                        PDF conectada a estos botones. */}
+                    <button disabled aria-disabled="true" title="Próximamente" className="flex items-center justify-center gap-2 py-2 bg-secondary/50 rounded-xl font-medium text-sm opacity-50 cursor-not-allowed">
+                      SVG (próximamente)
+                    </button>
+                    <button disabled aria-disabled="true" title="Próximamente" className="flex items-center justify-center gap-2 py-2 bg-secondary/50 rounded-xl font-medium text-sm opacity-50 cursor-not-allowed">
+                      PDF (próximamente)
                     </button>
                   </div>
                 </div>
