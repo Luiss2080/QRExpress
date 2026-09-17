@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { QrCode, Upload, Camera, Settings2, Download, Zap, Link as LinkIcon, Share2, Mail, MapPin, HelpCircle, X, Check } from 'lucide-react';
 import QRCode from 'qrcode';
@@ -10,13 +10,34 @@ import { toast } from 'sonner';
 export default function Home() {
   const [activeTab, setActiveTab] = useState<'individual' | 'masivo' | 'escaner'>('individual');
   const [qrType, setQrType] = useState<'url' | 'social' | 'vcard' | 'email' | 'location'>('url');
-  
+
   const [qrData, setQrData] = useState('https://ejemplo.com');
   const [qrColor, setQrColor] = useState('#0f172a');
   const [qrImage, setQrImage] = useState('');
   const [logoImage, setLogoImage] = useState<string | null>(null);
-  
+
   const [showSettingsModal, setShowSettingsModal] = useState(false);
+  const settingsTriggerRef = useRef<HTMLButtonElement>(null);
+  const settingsCloseRef = useRef<HTMLButtonElement>(null);
+
+  const closeSettingsModal = () => {
+    setShowSettingsModal(false);
+    settingsTriggerRef.current?.focus();
+  };
+
+  // Accesibilidad: al abrir el modal, mover el foco a su botón de cierre;
+  // al cerrarlo con Escape, devolver el foco al botón que lo abrió. Antes
+  // el foco del teclado se quedaba "atrás" del overlay, dentro del
+  // formulario oculto.
+  useEffect(() => {
+    if (!showSettingsModal) return;
+    settingsCloseRef.current?.focus();
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') closeSettingsModal();
+    };
+    document.addEventListener('keydown', onKeyDown);
+    return () => document.removeEventListener('keydown', onKeyDown);
+  }, [showSettingsModal]);
 
   useEffect(() => {
     QRCode.toDataURL(qrData || 'https://ejemplo.com', {
@@ -103,45 +124,59 @@ export default function Home() {
           {/* Sidebar Tools */}
           <div className="w-full md:w-64 bg-secondary/30 p-6 flex flex-col gap-4 border-r border-border/50">
             <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-2">Herramientas</h3>
-            
-            <button 
-              onClick={() => setActiveTab('individual')}
-              className={`relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all overflow-hidden ${activeTab === 'individual' ? 'text-white' : 'hover:bg-secondary/50'}`}
-            >
-              {activeTab === 'individual' && (
-                <motion.div layoutId="activeTabBg" className="absolute inset-0 bg-primary shadow-lg shadow-primary/25 rounded-xl z-0" />
-              )}
-              <div className="relative z-10 flex items-center gap-3">
-                <Zap className="w-5 h-5" />
-                <span className="font-medium">Individual</span>
-              </div>
-            </button>
-            
-            <button 
-              onClick={() => setActiveTab('masivo')}
-              className={`relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all overflow-hidden ${activeTab === 'masivo' ? 'text-white' : 'hover:bg-secondary/50'}`}
-            >
-              {activeTab === 'masivo' && (
-                <motion.div layoutId="activeTabBg" className="absolute inset-0 bg-primary shadow-lg shadow-primary/25 rounded-xl z-0" />
-              )}
-              <div className="relative z-10 flex items-center gap-3">
-                <Upload className="w-5 h-5" />
-                <span className="font-medium">Generación Masiva</span>
-              </div>
-            </button>
-            
-            <button 
-              onClick={() => setActiveTab('escaner')}
-              className={`relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all overflow-hidden ${activeTab === 'escaner' ? 'text-white' : 'hover:bg-secondary/50'}`}
-            >
-              {activeTab === 'escaner' && (
-                <motion.div layoutId="activeTabBg" className="absolute inset-0 bg-primary shadow-lg shadow-primary/25 rounded-xl z-0" />
-              )}
-              <div className="relative z-10 flex items-center gap-3">
-                <Camera className="w-5 h-5" />
-                <span className="font-medium">Escáner Web</span>
-              </div>
-            </button>
+
+            <div role="tablist" aria-label="Herramientas del generador" className="flex flex-col gap-4">
+              <button
+                role="tab"
+                id="tab-individual"
+                aria-selected={activeTab === 'individual'}
+                aria-controls="panel-individual"
+                onClick={() => setActiveTab('individual')}
+                className={`relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all overflow-hidden ${activeTab === 'individual' ? 'text-white' : 'hover:bg-secondary/50'}`}
+              >
+                {activeTab === 'individual' && (
+                  <motion.div layoutId="activeTabBg" className="absolute inset-0 bg-primary shadow-lg shadow-primary/25 rounded-xl z-0" />
+                )}
+                <div className="relative z-10 flex items-center gap-3">
+                  <Zap className="w-5 h-5" />
+                  <span className="font-medium">Individual</span>
+                </div>
+              </button>
+
+              <button
+                role="tab"
+                id="tab-masivo"
+                aria-selected={activeTab === 'masivo'}
+                aria-controls="panel-masivo"
+                onClick={() => setActiveTab('masivo')}
+                className={`relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all overflow-hidden ${activeTab === 'masivo' ? 'text-white' : 'hover:bg-secondary/50'}`}
+              >
+                {activeTab === 'masivo' && (
+                  <motion.div layoutId="activeTabBg" className="absolute inset-0 bg-primary shadow-lg shadow-primary/25 rounded-xl z-0" />
+                )}
+                <div className="relative z-10 flex items-center gap-3">
+                  <Upload className="w-5 h-5" />
+                  <span className="font-medium">Generación Masiva</span>
+                </div>
+              </button>
+
+              <button
+                role="tab"
+                id="tab-escaner"
+                aria-selected={activeTab === 'escaner'}
+                aria-controls="panel-escaner"
+                onClick={() => setActiveTab('escaner')}
+                className={`relative flex items-center gap-3 px-4 py-3 rounded-xl transition-all overflow-hidden ${activeTab === 'escaner' ? 'text-white' : 'hover:bg-secondary/50'}`}
+              >
+                {activeTab === 'escaner' && (
+                  <motion.div layoutId="activeTabBg" className="absolute inset-0 bg-primary shadow-lg shadow-primary/25 rounded-xl z-0" />
+                )}
+                <div className="relative z-10 flex items-center gap-3">
+                  <Camera className="w-5 h-5" />
+                  <span className="font-medium">Escáner Web</span>
+                </div>
+              </button>
+            </div>
           </div>
 
           {/* Main Workspace Area */}
@@ -150,7 +185,7 @@ export default function Home() {
             {/* Left Panel: Configuration */}
             <div className="flex-1 flex flex-col gap-8">
               {activeTab === 'individual' && (
-                <motion.div initial={{opacity:0}} animate={{opacity:1}}>
+                <motion.div id="panel-individual" role="tabpanel" aria-labelledby="tab-individual" initial={{opacity:0}} animate={{opacity:1}}>
                   <h2 className="text-2xl font-bold mb-6">Configura tu QR</h2>
                   
                   {/* Type Selector */}
@@ -161,9 +196,10 @@ export default function Home() {
                       { id: 'email', icon: Mail, label: 'Correo' },
                       { id: 'location', icon: MapPin, label: 'Ubicación' },
                     ].map((t) => (
-                      <button 
+                      <button
                         key={t.id}
                         onClick={() => setQrType(t.id as any)}
+                        aria-pressed={qrType === t.id}
                         className={`flex flex-col items-center justify-center p-4 rounded-2xl border transition-all ${qrType === t.id ? 'border-primary bg-primary/5 text-primary' : 'border-border/50 hover:border-primary/30 text-muted-foreground'}`}
                       >
                         <t.icon className="w-6 h-6 mb-2" />
@@ -175,9 +211,10 @@ export default function Home() {
                   {/* Input Data */}
                   <div className="space-y-4">
                     <div>
-                      <label className="block text-sm font-medium mb-2">Destino (URL)</label>
-                      <input 
-                        type="text" 
+                      <label htmlFor="qr-destino" className="block text-sm font-medium mb-2">Destino (URL)</label>
+                      <input
+                        id="qr-destino"
+                        type="text"
                         value={qrData}
                         onChange={(e) => setQrData(e.target.value)}
                         placeholder="https://ejemplo.com"
@@ -190,21 +227,29 @@ export default function Home() {
                         <label className="text-sm font-medium flex items-center gap-2">
                           <Settings2 className="w-4 h-4" /> Personalización Visual
                         </label>
-                        <button onClick={() => setShowSettingsModal(true)} className="text-xs bg-primary text-white px-3 py-1.5 rounded-full font-semibold hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20">
+                        <button ref={settingsTriggerRef} onClick={() => setShowSettingsModal(true)} className="text-xs bg-primary text-white px-3 py-1.5 rounded-full font-semibold hover:bg-primary/90 transition-colors shadow-lg shadow-primary/20">
                           Ajustes Avanzados
                         </button>
                       </div>
                       
                       <div className="grid grid-cols-2 gap-4">
-                        <div>
-                          <label className="block text-xs text-muted-foreground mb-1">Color Principal</label>
+                        <div role="group" aria-label="Color principal del código QR">
+                          <label className="block text-xs text-muted-foreground mb-1" id="qr-color-label">Color Principal</label>
                           <div className="flex gap-2">
-                            {['#0f172a', '#4f46e5', '#ec4899', '#10b981'].map(c => (
-                              <button 
-                                key={c} 
-                                onClick={() => setQrColor(c)}
-                                className={`w-8 h-8 rounded-full border-2 ${qrColor === c ? 'border-primary scale-110' : 'border-white dark:border-slate-800'} shadow-sm transition-all`} 
-                                style={{backgroundColor: c}} 
+                            {[
+                              { hex: '#0f172a', name: 'Negro azulado' },
+                              { hex: '#4f46e5', name: 'Índigo' },
+                              { hex: '#ec4899', name: 'Rosa' },
+                              { hex: '#10b981', name: 'Verde esmeralda' },
+                            ].map(({ hex, name }) => (
+                              <button
+                                key={hex}
+                                onClick={() => setQrColor(hex)}
+                                aria-label={`${name} (${hex})`}
+                                aria-pressed={qrColor === hex}
+                                title={`${name} (${hex})`}
+                                className={`w-8 h-8 rounded-full border-2 ${qrColor === hex ? 'border-primary scale-110' : 'border-white dark:border-slate-800'} shadow-sm transition-all`}
+                                style={{backgroundColor: hex}}
                               />
                             ))}
                           </div>
@@ -216,7 +261,7 @@ export default function Home() {
               )}
 
               {activeTab === 'masivo' && (
-                <motion.div initial={{opacity:0}} animate={{opacity:1}} className="flex flex-col items-center justify-center h-full text-center">
+                <motion.div id="panel-masivo" role="tabpanel" aria-labelledby="tab-masivo" initial={{opacity:0}} animate={{opacity:1}} className="flex flex-col items-center justify-center h-full text-center">
                   <div className="w-20 h-20 bg-primary/10 rounded-full flex items-center justify-center mb-6">
                     <Upload className="w-10 h-10 text-primary" />
                   </div>
@@ -229,7 +274,7 @@ export default function Home() {
               )}
 
               {activeTab === 'escaner' && (
-                <motion.div initial={{opacity:0}} animate={{opacity:1}} className="flex flex-col items-center justify-center h-full text-center">
+                <motion.div id="panel-escaner" role="tabpanel" aria-labelledby="tab-escaner" initial={{opacity:0}} animate={{opacity:1}} className="flex flex-col items-center justify-center h-full text-center">
                   <div className="w-full max-w-md aspect-square bg-black/5 rounded-3xl border-2 border-dashed border-border/60 flex flex-col items-center justify-center relative overflow-hidden">
                     <Camera className="w-12 h-12 text-muted-foreground mb-4" />
                     <p className="text-sm text-muted-foreground font-medium">Cámara no inicializada</p>
@@ -298,16 +343,19 @@ export default function Home() {
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
           >
-            <motion.div 
-              initial={{ scale: 0.95, y: 20 }} 
-              animate={{ scale: 1, y: 0 }} 
+            <motion.div
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="settings-modal-title"
+              initial={{ scale: 0.95, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
               exit={{ scale: 0.95, y: 20 }}
               className="bg-background rounded-3xl shadow-2xl p-6 md:p-8 max-w-lg w-full border border-border/50 relative"
             >
-              <button onClick={() => setShowSettingsModal(false)} className="absolute top-6 right-6 text-muted-foreground hover:text-foreground bg-secondary/50 p-2 rounded-full transition-colors">
+              <button ref={settingsCloseRef} onClick={closeSettingsModal} aria-label="Cerrar ajustes avanzados" className="absolute top-6 right-6 text-muted-foreground hover:text-foreground bg-secondary/50 p-2 rounded-full transition-colors">
                 <X className="w-5 h-5" />
               </button>
-              <h3 className="text-2xl font-bold mb-2">Ajustes Avanzados de QR</h3>
+              <h3 id="settings-modal-title" className="text-2xl font-bold mb-2">Ajustes Avanzados de QR</h3>
               <p className="text-muted-foreground mb-6">Configura opciones premium (próximamente conectadas con el backend SaaS).</p>
               
               <div className="space-y-5">
@@ -337,14 +385,14 @@ export default function Home() {
                   )}
                 </div>
                 <div>
-                  <label className="block text-sm font-medium mb-2">Nivel de Corrección de Errores</label>
-                  <select className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-border/50 focus:outline-none">
+                  <label htmlFor="qr-error-correction" className="block text-sm font-medium mb-2">Nivel de Corrección de Errores</label>
+                  <select id="qr-error-correction" className="w-full px-4 py-3 rounded-xl bg-secondary/50 border border-border/50 focus:outline-none">
                     <option>Alta (Recomendado para Logos)</option>
                     <option>Media</option>
                     <option>Baja</option>
                   </select>
                 </div>
-                <button onClick={() => setShowSettingsModal(false)} className="w-full py-3 mt-4 bg-foreground text-background rounded-xl font-medium">
+                <button onClick={closeSettingsModal} className="w-full py-3 mt-4 bg-foreground text-background rounded-xl font-medium">
                   Guardar y Cerrar
                 </button>
               </div>
